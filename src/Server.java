@@ -4,6 +4,13 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * Esta clase crea un servidor que se acepta la conexion de la clase cliente para iniciar el juego.
+ *
+ * @author Andres Uriza
+ * @author Daniel Castro
+ * @author Jose Pablo Esquetini
+ */
 public class Server {
     private int port;
     private DataInputStream input;
@@ -11,6 +18,9 @@ public class Server {
     private ServerSocket ss;
     private Socket cs;
 
+    /**
+     * @throws IOException
+     */
     public Server() throws IOException {
         port = 5000;
 
