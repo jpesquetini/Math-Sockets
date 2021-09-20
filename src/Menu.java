@@ -78,8 +78,11 @@ public class Menu {
      * @param args
      * @throws IOException
      */
+
+     /*
     public static void main(String[] args) throws IOException {
         Menu menuClient = new Menu("Client");
         Menu menuServer = new Menu("Server");
     }
+    */
 }
