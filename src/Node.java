@@ -1,20 +1,16 @@
 public class Node {
-    public Object data;
-    public Node next;
-    public Node prev;
+    private String type;
+    private Node next;
+    private Node prev;
 
-    public Node(Object data) {
+    public Node(String type) {
         this.next = null;
         this.prev = null;
-        this.data = data;
+        this.type = type;
     }
 
-    public Object getData() {
-        return this.data;
-    }
-
-    public void setData(Object data) {
-        this.data = data;
+    public String getType() {
+        return this.type;
     }
 
     public Node getNext() {
