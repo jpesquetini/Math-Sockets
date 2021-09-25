@@ -37,11 +37,11 @@ public class DoublyLinkedList {
         return this.player2;
     }
 
-    public void insertLast(String type) {
-        Node newNode = new Node(type);
+    public void insertLast(String type, int listPosition, int xcoords, int ycoords) {
+        Node newNode = new Node(type, listPosition, xcoords, ycoords);
 
         if (this.isEmpty()) {
-            this.head = this.last = newNode;
+            this.head = this.last = this.player1 = this.player2 = newNode;
         }
         else {
             Node temp = this.last;

@@ -20,6 +20,7 @@ public class Game_window {
     private JPanel side_panel;
     private int width;
     private int height;
+    private JLabel dado0;
     private JLabel dado1;
     private JLabel dado2;
     private JLabel dado3;
@@ -34,22 +35,25 @@ public class Game_window {
      * @param type
      * @throws IOException
      */
-    public Game_window(String type) throws IOException {
+    public Game_window(String type, Node player) throws IOException {
         width = 900;
         height = 720;
 
         UI menuInterface = new UI(type, width, height);
 
+        dado0 = new JLabel("0");
         dado1 = new JLabel("1");
         dado2 = new JLabel("2");
         dado3 = new JLabel("3");
         dado4 = new JLabel("4");
 
+        dado0.setFont(new Font("serif", Font.BOLD,100));
         dado1.setFont(new Font("serif", Font.BOLD,100));
         dado2.setFont(new Font("serif", Font.BOLD,100));
         dado3.setFont(new Font("serif", Font.BOLD,100));
         dado4.setFont(new Font("serif", Font.BOLD,100));
 
+        dado0.setBounds(200,500,50,300);
         dado1.setBounds(200,500,50,300);
         dado2.setBounds(200,500,50,300);
         dado3.setBounds(200,500,50,300);
@@ -82,37 +86,40 @@ public class Game_window {
         Dado.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                side_panel.remove(dado0);
                 side_panel.remove(dado1);
                 side_panel.remove(dado2);
                 side_panel.remove(dado3);
                 side_panel.remove(dado4);
                 side_panel.revalidate();
                 side_panel.repaint();
-                aleatorio = (int)(Math.random()*4+1);
+                aleatorio = (int)(Math.random()*5);
                 System.out.println(aleatorio);
-                if (aleatorio == 1){
-                    side_panel.add(dado1);
+                new PlayerMovements(aleatorio, player, true);
+                if (aleatorio == 0){
+                    side_panel.add(dado0);
                     side_panel.setVisible(true);
                 }else{
-                    if(aleatorio == 2){
-                        side_panel.add(dado2);
+                    if (aleatorio == 1){
+                        side_panel.add(dado1);
                         side_panel.setVisible(true);
                     }else{
-                        if (aleatorio == 3){
-                            side_panel.add(dado3);
+                        if(aleatorio == 2){
+                            side_panel.add(dado2);
                             side_panel.setVisible(true);
                         }else{
-                            side_panel.add(dado4);
-                            side_panel.setVisible(true);
+                            if (aleatorio == 3){
+                                side_panel.add(dado3);
+                                side_panel.setVisible(true);
+                            }else{
+                                side_panel.add(dado4);
+                                side_panel.setVisible(true);
+                            }
                         }
                     }
                 }
-
-
             }
-
         });
-
     }
 
 
