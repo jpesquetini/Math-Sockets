@@ -27,7 +27,7 @@ public class Menu {
      * @param type
      * @throws IOException
      */
-    public Menu(String type, Node temp, Node player) throws IOException {
+    public Menu(String type, Node temp, GameList player) throws IOException {
         width = 800;
         height = 500;
 
@@ -95,7 +95,7 @@ public class Menu {
         Node player1 = gameData.get_player1();
         Node player2 = gameData.get_player2();
 
-        Menu menuServer = new Menu("Server", temp, gameData.get_player1());
-        Menu menuClient = new Menu("Client", temp, gameData.get_player2());
+        Menu menuServer = new Menu("Server", temp, gameData);
+        Menu menuClient = new Menu("Client", temp, gameData);
     }
 }

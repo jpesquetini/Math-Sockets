@@ -1,5 +1,6 @@
 public class PlayerMovements {
     public PlayerMovements(int i, Node temp, boolean firstTime) {
+        /*
         if (i > 0) {
             while (i != 0) {
                 System.out.println(temp.getListPosition());
@@ -27,5 +28,6 @@ public class PlayerMovements {
                 System.out.println(casilla);
             }
         } 
+        */
     }
 }

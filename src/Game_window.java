@@ -35,7 +35,7 @@ public class Game_window {
      * @param type
      * @throws IOException
      */
-    public Game_window(String type, Node player) throws IOException {
+    public Game_window(String type, GameList player) throws IOException {
         width = 900;
         height = 720;
 
@@ -95,7 +95,7 @@ public class Game_window {
                 side_panel.repaint();
                 aleatorio = (int)(Math.random()*5);
                 System.out.println(aleatorio);
-                new PlayerMovements(aleatorio, player, true);
+                player.movePlayer(aleatorio, true);
                 if (aleatorio == 0){
                     side_panel.add(dado0);
                     side_panel.setVisible(true);

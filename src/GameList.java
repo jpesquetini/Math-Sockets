@@ -60,4 +60,21 @@ public class GameList {
     public Node get_player2() {
         return gameData.getPlayer2();
     }
+
+    public void movePlayer(int i, boolean firstTime) {
+        if (i > 0) {
+            while (i != 0) {
+                System.out.println(gameData.player1);
+                gameData.player1 = gameData.player1.getNext();
+                System.out.println(gameData.player1.getListPosition());
+                i--;
+            }
+
+            if (firstTime) {
+                String casilla = gameData.player1.getType();
+                System.out.println(casilla);
+            }
+        }
+    }
 }
+
