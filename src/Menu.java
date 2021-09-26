@@ -100,6 +100,6 @@ public class Menu {
         Node temp = gameData.get_head();
 
         Menu menuServer = new Menu("Server", temp, gameData, "player1");
-        //Menu menuClient = new Menu("Client", temp, gameData, "player2");
+        Menu menuClient = new Menu("Client", temp, gameData, "player2");
     }
 }

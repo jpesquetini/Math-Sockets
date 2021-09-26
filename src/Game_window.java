@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Esta clase define una ventana de interfaz de menu, que permite la entrada de un nombre para conectar al cliente y al
- * servidor
+ * Esta clase define una ventana de interfaz de juego, donde se puede llevar a cabo el juego.
  *
  * @author Andres Uriza
  * @author Daniel Castro
  * @author Jose Pablo Esquetini
  */
+
 public class Game_window {
     private JPanel panel;
     private JPanel side_panel;
@@ -32,9 +32,15 @@ public class Game_window {
     // private BufferedImage bg;
 
     /**
+     * Est metodo se encarga de crar la ventana de juego.
+     * 
      * @param type
      * @throws IOException
+     * @author Andres Uriza
+     * @author Daniel Castro
+     * @author Jose Pablo Esquetini
      */
+
     public Game_window(String type, GameList gameList, String currentPlayer) throws IOException {
         width = 900;
         height = 720;
@@ -133,9 +139,14 @@ public class Game_window {
     /**
      * Esta función recibe una copia del nodo head de la lista doblemente enlazada y
      * rellena el grid para acomodar las casillas
+     * 
      * @param temp
-     *
+     * 
+     * @author Andres Uriza
+     * @author Daniel Castro
+     * @author Jose Pablo Esquetini
      */
+
     public void boardlogic(Node temp){
         while( temp != null){
             String posicion = temp.getType();

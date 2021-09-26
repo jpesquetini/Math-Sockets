@@ -1,6 +1,7 @@
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Esta clase define la logica de la lista de juego.
@@ -137,7 +138,7 @@ public class GameList {
                 System.out.println(casilla);
 
                 if (casilla == "Reto") {
-                    System.out.println("Esta es una casilla de Reto");
+                    reto("player1");
                 }
                 if (casilla == "Tunel") {
                     tunel("player1");
@@ -164,21 +165,6 @@ public class GameList {
             }
 
             System.out.println(gameData.player1.getListPosition());
-
-            if (firstTime) {
-                String casilla = gameData.player1.getType();
-                System.out.println(casilla);
-
-                if (casilla == "Reto") {
-                    System.out.println("Esta es una casilla de Reto");
-                }
-                if (casilla == "Tunel") {
-                    tunel("player1");
-                }
-                if (casilla == "Trampa") {
-                    trampa("player1");
-                }
-            }
         }
     }
 
@@ -198,7 +184,7 @@ public class GameList {
                 String position = gameData.player2.getType();
 
                 if (position != "Fin") {
-                    gameData.player1 = gameData.player2.getNext();
+                    gameData.player2 = gameData.player2.getNext();
                     i--;
                 } else {
                     System.out.println("Se ha llegado al Fin");
@@ -213,7 +199,7 @@ public class GameList {
                 System.out.println(casilla);
 
                 if (casilla == "Reto") {
-                    System.out.println("Esta es una casilla de Reto");
+                    reto("player2");
                 }
                 if (casilla == "Tunel") {
                     tunel("player2");
@@ -240,21 +226,6 @@ public class GameList {
             }
 
             System.out.println(gameData.player2.getListPosition());
-
-            if (firstTime) {
-                String casilla = gameData.player2.getType();
-                System.out.println(casilla);
-
-                if (casilla == "Reto") {
-                    System.out.println("Esta es una casilla de Reto");
-                }
-                if (casilla == "Tunel") {
-                    tunel("player2");
-                }
-                if (casilla == "Trampa") {
-                    trampa("player2");
-                }
-            }
         }
     }
 
@@ -296,6 +267,66 @@ public class GameList {
         }
         if (currentPlayer == "player2") {
             movePlayer2(rnd, false);
+        }
+    }
+
+    /**
+     * Este metodo se encarga de la logica de las casillas de tipo reto.
+     *
+     * @author Andres Uriza
+     * @author Daniel Castro
+     * @author Jose Pablo Esquetini
+     */
+
+    public void reto(String currentPlayer) {
+        String playerChallenged = "";
+
+        if (currentPlayer == "player1") {
+            movePlayer1(1, false);
+            playerChallenged = "player2";
+        }
+        if (currentPlayer == "player2") {
+            movePlayer2(1, false);
+            playerChallenged = "player1";
+        }
+
+        int arg1 = (int)(Math.random()*50 + 1);
+        int arg2 = (int)(Math.random()*50 + 1);
+        String[] operatorArray = {"+", "-", "*", "/"};
+        int i = new Random().nextInt(operatorArray.length);
+        String operator = operatorArray[i];
+        String operation = arg1 + operator + arg2;
+        
+        String reto = javax.swing.JOptionPane.showInputDialog(playerChallenged +  " what's: " + operation);
+        int retoAnswer = Integer.parseInt(reto);
+
+        int retoResult = 0;
+
+        if (operator == "+") {
+            retoResult = arg1 + arg2;
+        }
+        if (operator == "-") {
+            retoResult = arg1 - arg2;
+        }
+        if (operator == "*") {
+            retoResult = arg1 * arg2;
+        }
+        if (operator == "/") {
+            retoResult = (int)(arg1 / arg2);
+        }
+
+        if (retoAnswer == retoResult) {
+            javax.swing.JOptionPane.showMessageDialog(null, "That's right!!!");
+        }
+        if (retoAnswer != retoResult) {
+            javax.swing.JOptionPane.showMessageDialog(null, "That's wrong :(");
+            
+            if (currentPlayer == "player1") {
+                movePlayer2(-1, false);
+            }
+            if (currentPlayer == "player2") {
+                movePlayer1(-1, false);
+            }
         }
     }
 }
