@@ -13,6 +13,7 @@ import java.util.ArrayList;
  * @author Daniel Castro
  * @author Jose Pablo Esquetini
  */
+
 public class Menu {
     private JLabel name_label;
     private JTextField name_field;
@@ -27,7 +28,8 @@ public class Menu {
      * @param type
      * @throws IOException
      */
-    public Menu(String type, Node temp, GameList player) throws IOException {
+
+    public Menu(String type, Node temp, GameList gameList, String currentPlayer) throws IOException {
         width = 800;
         height = 500;
 
@@ -55,7 +57,7 @@ public class Menu {
             public void actionPerformed(ActionEvent e) {
                 try {
                     //Menu menuServer = new Menu("Server",temp);
-                    Game_window game = new Game_window("game", player);
+                    Game_window game = new Game_window("game", gameList, currentPlayer);
                     game.boardlogic(temp);
                     //game.dados(); 
                     menuInterface.window.dispose();
@@ -82,20 +84,22 @@ public class Menu {
 
 
     /**
+     * Este metodo se encarga de correr el codigo, creando la instancia de la lista doblementa enlazada y la interfaz.
+     * 
      * @param args
      * @throws IOException
+     * @author Andres Uriza
+     * @author Daniel Castro
+     * @author Jose Pablo Esquetini
      */
 
     public static void main(String[] args) throws IOException {
         GameList gameData = new GameList();
         gameData.gameListAssignment();
-        gameData.printGameList();
 
         Node temp = gameData.get_head();
-        Node player1 = gameData.get_player1();
-        Node player2 = gameData.get_player2();
 
-        Menu menuServer = new Menu("Server", temp, gameData);
-        Menu menuClient = new Menu("Client", temp, gameData);
+        Menu menuServer = new Menu("Server", temp, gameData, "player1");
+        //Menu menuClient = new Menu("Client", temp, gameData, "player2");
     }
 }

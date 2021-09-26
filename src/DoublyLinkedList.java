@@ -52,37 +52,4 @@ public class DoublyLinkedList {
         }
         this.size++;
     }
-
-    /*
-    public void movePlayer(int i, boolean firstTime) {
-        if (i > 0) {
-            while (i != 0) {
-                System.out.println(this.player1);
-                this.player1 = this.player1.getNext();
-                System.out.println(this.player1.getListPosition());
-                i--;
-            }
-
-            if (firstTime) {
-                String casilla = this.player1.getType();
-                System.out.println(casilla);
-            }
-        }
-
-        if (i < 0) {
-            while (i != 0) {
-                System.out.println(temp.getListPosition());
-                temp = temp.getPrev();
-                System.out.println(temp.getListPosition());
-                i++;
-            }
-
-            if (firstTime) {
-                String casilla = temp.getType();
-                System.out.println(casilla);
-            }
-        } 
-        
-    }
-    */
 }
