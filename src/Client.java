@@ -12,7 +12,7 @@ public class Client {
     DataInputStream in;
     DataOutputStream out;
 
-    public Client(int port) {
+    public Client(int port, GameList gamedata) {
         try {
             Socket sc = new Socket("localhost", port);
             System.out.println("Connected");
@@ -23,10 +23,11 @@ public class Client {
         }
     }
 
-    public void my_turn() {
+    public void my_turn(int number) throws IOException {
+        out.writeInt(number);
     }
 
     public void your_turn() throws IOException {
-        System.out.println(in.readUTF());
+       System.out.println(in.readInt());
     }
 }

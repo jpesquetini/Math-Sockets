@@ -10,20 +10,19 @@ import java.util.Random;
  * @author Daniel Castro
  * @author Jose Pablo Esquetini
  */
-
 public class GameList {
     private DoublyLinkedList gameData;
+    private Server jugador1;
+    private Client jugador2;
+
     static String[] typeArray = new String[]{"Reto", "Reto", "Reto", "Reto", "Reto", "Reto", "Reto",
             "Trampa", "Trampa", "Trampa", "Trampa",
             "Tunel", "Tunel", "Tunel"};
 
     /**
-     * Este metodo se encarga de randomiiisar un array de strings los cuales indican el tipo de casilla para la lista de juego y
-     * retorna este array.
-     *
-     * @throws typeArray
+     * Este metodo se encarga de randomiiisar un array de strings los cuales indican el tipo de casilla para la lista de
+     * juego y retorna este array.
      */
-
     public static String[] listRandomizer() {
         List<String> typeList = Arrays.asList(typeArray);
         Collections.shuffle(typeList);
@@ -34,7 +33,6 @@ public class GameList {
     /**
      * Este metodo construye la lista de juego.
      */
-
     public GameList() {
         gameData = new DoublyLinkedList();
     }
@@ -42,7 +40,6 @@ public class GameList {
     /**
      * Este metodo se encarga de crear y asignar los nodos que almacenaran la informacion de las casillas de juego.
      */
-
     public void gameListAssignment() {
         int[] xcoords = {100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600};
         int[] ycoords = {110, 220, 330, 440, 550, 660, 770, 880, 990, 1010, 1110, 1220, 1330, 1440, 1550, 1660};
@@ -67,37 +64,26 @@ public class GameList {
     /**
      * Este metodo imprime la lista de juego.
      */
-
     public void printGameList() {
         Node temp = this.gameData.getHead();
 
         while (temp != null) {
-            System.out.println("[" + temp.getType() + ", " + temp.getListPosition() + ", " + temp.getXcoords() + ", " + temp.getYcoords() + "]");
+            System.out.println("[" + temp.getType() + ", " + temp.getListPosition() + ", " + temp.getXcoords() + ", " +
+                    temp.getYcoords() + "]");
             temp = temp.getNext();
         }
     }
 
     /**
      * Este metodo retorna el nodo que es la cabeza de la lista de juego.
-     *
-     * @throws head
-     * @author Andres Uriza
-     * @author Daniel Castro
-     * @author Jose Pablo Esquetini
      */
-
     public Node get_head() {
         return gameData.getHead();
     }
 
     /**
      * Este metodo se encarga de la logica de los movimientos del jugador 1 en el tablero de juego.
-     *
-     * @author Andres Uriza
-     * @author Daniel Castro
-     * @author Jose Pablo Esquetini
      */
-
     public void movePlayer1(int i, boolean firstTime) {
         if (i > 0) {
             System.out.println(gameData.player1.getListPosition());
@@ -105,7 +91,7 @@ public class GameList {
             while (i != 0) {
                 String position = gameData.player1.getType();
 
-                if (position != "Fin") {
+                if (!position.equals("Fin")) {
                     gameData.player1 = gameData.player1.getNext();
                     i--;
                 } else {
@@ -114,19 +100,17 @@ public class GameList {
                 }
             }
 
-            System.out.println(gameData.player1.getListPosition());
-
             if (firstTime) {
                 String casilla = gameData.player1.getType();
                 System.out.println(casilla);
 
-                if (casilla == "Reto") {
+                if (casilla.equals("Reto")) {
                     reto("player1");
                 }
-                if (casilla == "Tunel") {
+                if (casilla.equals("Tunel")) {
                     tunel("player1");
                 }
-                if (casilla == "Trampa") {
+                if (casilla.equals("Trampa")) {
                     trampa("player1");
                 }
             }
@@ -138,7 +122,7 @@ public class GameList {
             while (i != 0) {
                 String position = gameData.player1.getType();
 
-                if (position != "Inicio") {
+                if (!position.equals("Inicio")) {
                     gameData.player1 = gameData.player1.getPrev();
                     i++;
                 } else {
@@ -166,7 +150,7 @@ public class GameList {
             while (i != 0) {
                 String position = gameData.player2.getType();
 
-                if (position != "Fin") {
+                if (!position.equals("Fin")) {
                     gameData.player2 = gameData.player2.getNext();
                     i--;
                 } else {
@@ -181,13 +165,13 @@ public class GameList {
                 String casilla = gameData.player2.getType();
                 System.out.println(casilla);
 
-                if (casilla == "Reto") {
+                if (casilla.equals("Reto")) {
                     reto("player2");
                 }
-                if (casilla == "Tunel") {
+                if (casilla.equals("Tunel")) {
                     tunel("player2");
                 }
-                if (casilla == "Trampa") {
+                if (casilla.equals("Trampa")) {
                     trampa("player2");
                 }
             }
@@ -199,7 +183,7 @@ public class GameList {
             while (i != 0) {
                 String position = gameData.player2.getType();
 
-                if (position != "Inicio") {
+                if (!position.equals("Inicio")) {
                     gameData.player1 = gameData.player2.getPrev();
                     i++;
                 } else {
@@ -224,10 +208,10 @@ public class GameList {
         int rnd = (int) (Math.random() * 3 + 1);
         System.out.println(rnd);
 
-        if (currentPlayer == "player1") {
+        if (currentPlayer.equals("player1")) {
             movePlayer1(rnd, false);
         }
-        if (currentPlayer == "player2") {
+        if (currentPlayer.equals("player2")) {
             movePlayer2(rnd, false);
         }
     }
@@ -245,30 +229,25 @@ public class GameList {
         rnd *= -1;
         System.out.println(rnd);
 
-        if (currentPlayer == "player1") {
+        if (currentPlayer.equals("player1")) {
             movePlayer1(rnd, false);
         }
-        if (currentPlayer == "player2") {
+        if (currentPlayer.equals("player2")) {
             movePlayer2(rnd, false);
         }
     }
 
     /**
      * Este metodo se encarga de la logica de las casillas de tipo reto.
-     *
-     * @author Andres Uriza
-     * @author Daniel Castro
-     * @author Jose Pablo Esquetini
      */
-
     public void reto(String currentPlayer) {
         String playerChallenged = "";
 
-        if (currentPlayer == "player1") {
+        if (currentPlayer.equals("player1")) {
             movePlayer1(1, false);
             playerChallenged = "player2";
         }
-        if (currentPlayer == "player2") {
+        if (currentPlayer.equals("player2")) {
             movePlayer2(1, false);
             playerChallenged = "player1";
         }
@@ -285,16 +264,16 @@ public class GameList {
 
         int retoResult = 0;
 
-        if (operator == "+") {
+        if (operator.equals("+")) {
             retoResult = arg1 + arg2;
         }
-        if (operator == "-") {
+        if (operator.equals("-")) {
             retoResult = arg1 - arg2;
         }
-        if (operator == "*") {
+        if (operator.equals("*")) {
             retoResult = arg1 * arg2;
         }
-        if (operator == "/") {
+        if (operator.equals("/")) {
             retoResult = (int) (arg1 / arg2);
         }
 
@@ -304,10 +283,10 @@ public class GameList {
         if (retoAnswer != retoResult) {
             javax.swing.JOptionPane.showMessageDialog(null, "That's wrong :(");
 
-            if (currentPlayer == "player1") {
+            if (currentPlayer.equals("player1")) {
                 movePlayer2(-1, false);
             }
-            if (currentPlayer == "player2") {
+            if (currentPlayer.equals("player2")) {
                 movePlayer1(-1, false);
             }
         }

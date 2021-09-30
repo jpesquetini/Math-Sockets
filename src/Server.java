@@ -16,7 +16,7 @@ public class Server {
     private ServerSocket server;
     private Socket sc;
 
-    public Server(int port) throws IOException {
+    public Server(int port, GameList gamedata) throws IOException {
         server = new ServerSocket(port);
         System.out.println("Server started");
         sc = server.accept();
@@ -25,10 +25,11 @@ public class Server {
         out = new DataOutputStream(sc.getOutputStream());
     }
 
-    public void my_turn() throws IOException {
-        out.writeUTF("Hello from the server");
+    public void my_turn(int number) throws IOException {
+        out.writeInt(number);
     }
 
-    public void your_turn() {
+    public void your_turn() throws IOException {
+        System.out.println("NUMBER RECEIVED " + in.readInt());
     }
 }

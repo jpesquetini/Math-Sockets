@@ -1,11 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Esta clase define una ventana de interfaz de juego, donde se puede llevar a cabo el juego.
@@ -14,8 +9,7 @@ import java.util.Random;
  * @author Daniel Castro
  * @author Jose Pablo Esquetini
  */
-
-public class Game_window {
+public class Game_window extends Thread {
     private JPanel panel;
     private JPanel side_panel;
     private int width;
@@ -27,25 +21,22 @@ public class Game_window {
     private JLabel dado4;
     private int aleatorio;
     private JButton Dado;
-
-    // private JLabel bgLabel;
-    // private BufferedImage bg;
+    private Server gameServer;
+    private Client gameClient;
+    private String currentPlayer;
 
     /**
      * Est metodo se encarga de crar la ventana de juego.
-     * 
+     *
      * @param type
      * @throws IOException
-     * @author Andres Uriza
-     * @author Daniel Castro
-     * @author Jose Pablo Esquetini
      */
-
-    public Game_window(String type, GameList gameList, String currentPlayer) throws IOException {
+    public Game_window(String type, GameList gameList, String currentPlayer, Server gameServer, Client gameClient)
+            throws IOException {
         width = 900;
         height = 720;
 
-        UI menuInterface = new UI(type, width, height);
+        UI menuInterface = new UI(type + " window", width, height);
 
         dado0 = new JLabel("0");
         dado1 = new JLabel("1");
@@ -53,17 +44,17 @@ public class Game_window {
         dado3 = new JLabel("3");
         dado4 = new JLabel("4");
 
-        dado0.setFont(new Font("serif", Font.BOLD,100));
-        dado1.setFont(new Font("serif", Font.BOLD,100));
-        dado2.setFont(new Font("serif", Font.BOLD,100));
-        dado3.setFont(new Font("serif", Font.BOLD,100));
-        dado4.setFont(new Font("serif", Font.BOLD,100));
+        dado0.setFont(new Font("serif", Font.BOLD, 100));
+        dado1.setFont(new Font("serif", Font.BOLD, 100));
+        dado2.setFont(new Font("serif", Font.BOLD, 100));
+        dado3.setFont(new Font("serif", Font.BOLD, 100));
+        dado4.setFont(new Font("serif", Font.BOLD, 100));
 
-        dado0.setBounds(200,500,50,300);
-        dado1.setBounds(200,500,50,300);
-        dado2.setBounds(200,500,50,300);
-        dado3.setBounds(200,500,50,300);
-        dado4.setBounds(200,500,50,300);
+        dado0.setBounds(200, 500, 50, 300);
+        dado1.setBounds(200, 500, 50, 300);
+        dado2.setBounds(200, 500, 50, 300);
+        dado3.setBounds(200, 500, 50, 300);
+        dado4.setBounds(200, 500, 50, 300);
 
         panel = new JPanel();
         panel.setSize(600, 700);
@@ -77,7 +68,7 @@ public class Game_window {
         side_panel.setBackground(new Color(60, 139, 175));
 
         Dado = new JButton("Dado");
-        Dado.setBounds(200,600,30,30);
+        Dado.setBounds(200, 600, 30, 30);
 
 
         menuInterface.window.add(panel);
@@ -89,90 +80,75 @@ public class Game_window {
         side_panel.add(Dado);
         side_panel.setVisible(true);
 
-        Dado.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                side_panel.remove(dado0);
-                side_panel.remove(dado1);
-                side_panel.remove(dado2);
-                side_panel.remove(dado3);
-                side_panel.remove(dado4);
-                side_panel.revalidate();
-                side_panel.repaint();
-                aleatorio = (int)(Math.random()*5);
-                System.out.println(aleatorio);
+        this.gameServer = gameServer;
+        this.gameClient = gameClient;
 
-                if (currentPlayer == "player1") {
+        Dado.addActionListener(e -> {
+            side_panel.remove(dado0);
+            side_panel.remove(dado1);
+            side_panel.remove(dado2);
+            side_panel.remove(dado3);
+            side_panel.remove(dado4);
+            side_panel.revalidate();
+            side_panel.repaint();
+            aleatorio = (int) (Math.random() * 5);
+            System.out.println(aleatorio);
+
+            if (currentPlayer.equals("player1")) {
                     gameList.movePlayer1(aleatorio, true);
-                }
-                if (currentPlayer == "player2") {
+            }
+            if (currentPlayer.equals("player2")) {
                     gameList.movePlayer2(aleatorio, true);
-                }
+            }
 
-                if (aleatorio == 0){
-                    side_panel.add(dado0);
-                    side_panel.setVisible(true);
-                }else{
-                    if (aleatorio == 1){
-                        side_panel.add(dado1);
-                        side_panel.setVisible(true);
-                    }else{
-                        if(aleatorio == 2){
-                            side_panel.add(dado2);
-                            side_panel.setVisible(true);
-                        }else{
-                            if (aleatorio == 3){
-                                side_panel.add(dado3);
-                                side_panel.setVisible(true);
-                            }else{
-                                side_panel.add(dado4);
-                                side_panel.setVisible(true);
-                            }
+            if (aleatorio == 0) {
+                side_panel.add(dado0);
+            } else {
+                if (aleatorio == 1) {
+                    side_panel.add(dado1);
+                } else {
+                    if (aleatorio == 2) {
+                        side_panel.add(dado2);
+                    } else {
+                        if (aleatorio == 3) {
+                            side_panel.add(dado3);
+                        } else {
+                            side_panel.add(dado4);
                         }
                     }
                 }
             }
+            side_panel.setVisible(true);
         });
     }
-
 
     /**
      * Esta función recibe una copia del nodo head de la lista doblemente enlazada y
      * rellena el grid para acomodar las casillas
-     * 
+     *
      * @param temp
-     * 
-     * @author Andres Uriza
-     * @author Daniel Castro
-     * @author Jose Pablo Esquetini
      */
-
-    public void boardlogic(Node temp){
-        while( temp != null){
+    public void boardlogic(Node temp) {
+        while (temp != null) {
             String posicion = temp.getType();
             JLabel Label = new JLabel(posicion);
-            if (temp.getType()=="Reto"){
-                Label.setBackground(Color.green); //ELEGIR COLOR PARA LA CASILLA RETO
-                Label.setOpaque(true);
-            }else{
-                if (temp.getType()=="Trampa"){
-                    Label.setBackground(Color.red); //ELEGIR COLOR PARA LA CASILLA TRAMPA
-                    Label.setOpaque(true);
-                }else {
-                    if ((temp.getType() == "Inicio") || (temp.getType() == "Fin")) {
-                        Label.setBackground(Color.gray); //ELEGIR COLOR PARA LA CASILLA inicio y fin
-                        Label.setOpaque(true);
-                    }else {
-                        Label.setBackground(Color.cyan); //ELEGIR COLOR PARA LA CASILLA TUNEL
-                        Label.setOpaque(true);
+            if (temp.getType().equals("Reto")) {
+                Label.setBackground(Color.green);
+            } else {
+                if (temp.getType().equals("Trampa")) {
+                    Label.setBackground(Color.red);
+                } else {
+                    if ((temp.getType().equals("Inicio")) || (temp.getType().equals("Fin"))) {
+                        Label.setBackground(Color.gray);
+                    } else {
+                        Label.setBackground(Color.cyan);
                     }
                 }
             }
+            Label.setOpaque(true);
             Label.setBorder(BorderFactory.createLineBorder(Color.black, 2));
             panel.add(Label);
             temp = temp.getNext();
         }
     }
-
 }
-

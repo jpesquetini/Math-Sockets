@@ -1,9 +1,5 @@
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Esta clase define una ventana de interfaz de menu, que permite la entrada de un nombre para conectar al cliente y al
@@ -14,13 +10,26 @@ import java.util.ArrayList;
  * @author Jose Pablo Esquetini
  */
 
-public class Menu {
+public class Menu extends Thread {
     private JLabel name_label;
     private JTextField name_field;
     private JButton enter_button;
     private JPanel panel;
     private int width;
     private int height;
+    private Server player1;
+    private Client player2;
+    private boolean connected = false;
+    private boolean ready = false;
+    private GameList gameList;
+    private String currentPlayer;
+    private Node temp;
+    private UI menuInterface;
+    private String type;
+    private Server jugador1;
+    private Client jugador2;
+    private Game_window game;
+    private Game_logic current_game;
     // private JLabel bgLabel;
     // private BufferedImage bg;
 
@@ -29,11 +38,12 @@ public class Menu {
      * @throws IOException
      */
 
-    public Menu(String type, Node temp, GameList gameList, String currentPlayer) throws IOException {
+    public Menu(String type, Node temp, GameList gameList, String currentPlayer, Game_logic current_game) throws
+            IOException {
         width = 800;
         height = 500;
 
-        UI menuInterface = new UI(type + " - menu", width, height);
+        menuInterface = new UI(type + " - menu", width, height);
 
         panel = new JPanel();
         panel.setSize(width, height);
@@ -51,30 +61,28 @@ public class Menu {
         enter_button.setSize(70, 25);
         enter_button.setLocation(560, 400);
 
+        this.gameList = gameList;
+        this.currentPlayer = currentPlayer;
+        this.temp = temp;
+        this.type = type;
+        this.current_game = current_game;
 
-
-        enter_button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        enter_button.addActionListener(e -> {
+            if (type.equals("Server")) {
+                start();
+            } else {
                 try {
-                    //Menu menuServer = new Menu("Server",temp);
-                    Game_window game = new Game_window("game", gameList, currentPlayer);
-                    game.boardlogic(temp);
-                    //game.dados(); 
+                    Client jugador2 = new Client(5000, gameList);
+                    current_game.registerClient(jugador2);
+                    current_game.create_game("Client");
+                    String player_name = new String(name_field.getText());
                     menuInterface.window.dispose();
-                    String aja = new String(name_field.getText());//////////////////// para agarrar el nombre del jugador
-                    System.out.println(aja);
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }
             }
         });
 
-        /*
-        bg = ImageIO.read(new File("imagepath"));   // Path del fondo
-        bgLabel = new JLabel(new ImageIcon(bg));    // Label para colocar el fondo
-        bgLabel.setSize(width, height);
-        panel.add(bgLabel);
-         */
         panel.add(name_label);
         panel.add(name_field);
         panel.add(enter_button);
@@ -82,24 +90,39 @@ public class Menu {
         menuInterface.window.setVisible(true);
     }
 
+    public void run() {
+        try {
+            Server jugador1 = new Server(5000, gameList);
+            current_game.registerServer(jugador1);
+            current_game.registerGamedata(temp, gameList);
+            current_game.create_game("Server");
+            String player_name = new String(name_field.getText());
+            menuInterface.window.dispose();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+/*
+        bg = ImageIO.read(new File("imagepath"));   // Path del fondo
+        bgLabel = new JLabel(new ImageIcon(bg));    // Label para colocar el fondo
+        bgLabel.setSize(width, height);
+        panel.add(bgLabel);
+        */
 
     /**
      * Este metodo se encarga de correr el codigo, creando la instancia de la lista doblementa enlazada y la interfaz.
-     * 
+     *
      * @param args
      * @throws IOException
-     * @author Andres Uriza
-     * @author Daniel Castro
-     * @author Jose Pablo Esquetini
      */
 
     public static void main(String[] args) throws IOException {
         GameList gameData = new GameList();
         gameData.gameListAssignment();
+        Node temp = gameData.get_head();    // RECORDAR ELIMINAR ESTO EN CASO DE QUE NO SE OCUPE
 
-        Node temp = gameData.get_head();
-
-        Menu menuServer = new Menu("Server", temp, gameData, "player1");
-        Menu menuClient = new Menu("Client", temp, gameData, "player2");
+        Game_logic game1 = new Game_logic();
+        Menu menuServer = new Menu("Server", temp, gameData, "player1", game1);
+        Menu menuClient = new Menu("Client", temp, gameData, "player2", game1);
     }
 }

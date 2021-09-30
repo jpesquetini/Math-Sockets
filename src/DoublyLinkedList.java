@@ -39,7 +39,6 @@ public class DoublyLinkedList {
     /**
      * Este metodo retorna un entero el cual indica el tamaño de la lista.
      *
-     * @throws size
      */
 
     public int getSize() {
@@ -49,7 +48,6 @@ public class DoublyLinkedList {
     /**
      * Este metodo retorna el nodo que es la cabeza de la lista.
      *
-     * @throws head
      */
 
     public Node getHead() {
@@ -59,7 +57,6 @@ public class DoublyLinkedList {
     /**
      * Este metodo retorna el ultimo nodo de la lista.
      *
-     * @throws last
      */
 
     public Node getLast() {
@@ -79,7 +76,6 @@ public class DoublyLinkedList {
     /**
      * Este metodo retorna el nodo en el cual se encuentra actualmente el jugador2.
      *
-     * @throws player2
      */
 
     public Node getPlayer2() {
