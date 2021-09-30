@@ -34,8 +34,7 @@ public class Node {
     /**
      * Este metodo retorna un string cual indica el tipo de casilla que almacena este nodo.
      *
-     * @throws type 
-     *
+     * @throws type
      * @author Andres Uriza
      * @author Daniel Castro
      * @author Jose Pablo Esquetini
@@ -48,8 +47,7 @@ public class Node {
     /**
      * Este metodo retorna un entero el cual indica el numero de posicion del nodo en la lista del juego.
      *
-     * @throws listPosition 
-     *
+     * @throws listPosition
      * @author Andres Uriza
      * @author Daniel Castro
      * @author Jose Pablo Esquetini
@@ -62,8 +60,7 @@ public class Node {
     /**
      * Este metodo retorna un entero el cual indica la coordenada x del jugador en el mapa de juego.
      *
-     * @throws xcoords 
-     *
+     * @throws xcoords
      * @author Andres Uriza
      * @author Daniel Castro
      * @author Jose Pablo Esquetini
@@ -76,8 +73,7 @@ public class Node {
     /**
      * Este metodo retorna un entero el cual indica la coordenada y del jugador en el mapa de juego.
      *
-     * @throws ycoords 
-     *
+     * @throws ycoords
      * @author Andres Uriza
      * @author Daniel Castro
      * @author Jose Pablo Esquetini
@@ -90,8 +86,7 @@ public class Node {
     /**
      * Este metodo retorna el siguiente nodo en la lista.
      *
-     * @throws next 
-     *
+     * @throws next
      * @author Andres Uriza
      * @author Daniel Castro
      * @author Jose Pablo Esquetini
@@ -103,12 +98,7 @@ public class Node {
 
     /**
      * Este metodo se encarga de asignar la referencia al siguiente nodo en la lista.
-     *
-     * @author Andres Uriza
-     * @author Daniel Castro
-     * @author Jose Pablo Esquetini
      */
-
     public void setNext(Node node) {
         this.next = node;
     }
@@ -116,8 +106,7 @@ public class Node {
     /**
      * Este metodo retorna el nodo anterior en la lista.
      *
-     * @throws prev 
-     *
+     * @throws prev
      * @author Andres Uriza
      * @author Daniel Castro
      * @author Jose Pablo Esquetini

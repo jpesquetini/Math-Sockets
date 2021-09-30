@@ -1,8 +1,7 @@
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.KeyStore;
 
 /**
  * Esta clase crea un servidor que se acepta la conexion de la clase cliente para iniciar el juego.
@@ -12,25 +11,24 @@ import java.net.Socket;
  * @author Jose Pablo Esquetini
  */
 public class Server {
-    private int port;
-    private DataInputStream input;
-    private DataOutputStream output;
-    private ServerSocket ss;
-    private Socket cs;
+    private DataInputStream in;
+    private DataOutputStream out;
+    private ServerSocket server;
+    private Socket sc;
 
-    /**
-     * @throws IOException
-     */
-    public Server() throws IOException {
-        port = 5000;
-
-        ss = new ServerSocket(port);
-        System.out.println("Server online");
-
-        cs = ss.accept();
+    public Server(int port) throws IOException {
+        server = new ServerSocket(port);
+        System.out.println("Server started");
+        sc = server.accept();
         System.out.println("Client connected");
+        in = new DataInputStream(sc.getInputStream());
+        out = new DataOutputStream(sc.getOutputStream());
+    }
 
-        input = new DataInputStream(cs.getInputStream());
-        output = new DataOutputStream(cs.getOutputStream());
+    public void my_turn() throws IOException {
+        out.writeUTF("Hello from the server");
+    }
+
+    public void your_turn() {
     }
 }

@@ -13,7 +13,7 @@ import java.util.Random;
 
 public class GameList {
     private DoublyLinkedList gameData;
-    static String[] typeArray = new String[] {"Reto", "Reto", "Reto", "Reto", "Reto", "Reto", "Reto",
+    static String[] typeArray = new String[]{"Reto", "Reto", "Reto", "Reto", "Reto", "Reto", "Reto",
             "Trampa", "Trampa", "Trampa", "Trampa",
             "Tunel", "Tunel", "Tunel"};
 
@@ -22,10 +22,6 @@ public class GameList {
      * retorna este array.
      *
      * @throws typeArray
-     *
-     * @author Andres Uriza
-     * @author Daniel Castro
-     * @author Jose Pablo Esquetini
      */
 
     public static String[] listRandomizer() {
@@ -37,10 +33,6 @@ public class GameList {
 
     /**
      * Este metodo construye la lista de juego.
-     *
-     * @author Andres Uriza
-     * @author Daniel Castro
-     * @author Jose Pablo Esquetini
      */
 
     public GameList() {
@@ -49,10 +41,6 @@ public class GameList {
 
     /**
      * Este metodo se encarga de crear y asignar los nodos que almacenaran la informacion de las casillas de juego.
-     *
-     * @author Andres Uriza
-     * @author Daniel Castro
-     * @author Jose Pablo Esquetini
      */
 
     public void gameListAssignment() {
@@ -78,10 +66,6 @@ public class GameList {
 
     /**
      * Este metodo imprime la lista de juego.
-     *
-     * @author Andres Uriza
-     * @author Daniel Castro
-     * @author Jose Pablo Esquetini
      */
 
     public void printGameList() {
@@ -96,15 +80,14 @@ public class GameList {
     /**
      * Este metodo retorna el nodo que es la cabeza de la lista de juego.
      *
-     * @throws head 
-     *
+     * @throws head
      * @author Andres Uriza
      * @author Daniel Castro
      * @author Jose Pablo Esquetini
      */
 
     public Node get_head() {
-        return  gameData.getHead();
+        return gameData.getHead();
     }
 
     /**
@@ -155,7 +138,7 @@ public class GameList {
             while (i != 0) {
                 String position = gameData.player1.getType();
 
-                if (position != "Inicio"){
+                if (position != "Inicio") {
                     gameData.player1 = gameData.player1.getPrev();
                     i++;
                 } else {
@@ -216,7 +199,7 @@ public class GameList {
             while (i != 0) {
                 String position = gameData.player2.getType();
 
-                if (position != "Inicio"){
+                if (position != "Inicio") {
                     gameData.player1 = gameData.player2.getPrev();
                     i++;
                 } else {
@@ -238,7 +221,7 @@ public class GameList {
      */
 
     public void tunel(String currentPlayer) {
-        int rnd = (int)(Math.random()*3 + 1);
+        int rnd = (int) (Math.random() * 3 + 1);
         System.out.println(rnd);
 
         if (currentPlayer == "player1") {
@@ -258,7 +241,7 @@ public class GameList {
      */
 
     public void trampa(String currentPlayer) {
-        int rnd = (int)(Math.random()*3 + 1);
+        int rnd = (int) (Math.random() * 3 + 1);
         rnd *= -1;
         System.out.println(rnd);
 
@@ -290,14 +273,14 @@ public class GameList {
             playerChallenged = "player1";
         }
 
-        int arg1 = (int)(Math.random()*50 + 1);
-        int arg2 = (int)(Math.random()*50 + 1);
+        int arg1 = (int) (Math.random() * 50 + 1);
+        int arg2 = (int) (Math.random() * 50 + 1);
         String[] operatorArray = {"+", "-", "*", "/"};
         int i = new Random().nextInt(operatorArray.length);
         String operator = operatorArray[i];
         String operation = arg1 + operator + arg2;
-        
-        String reto = javax.swing.JOptionPane.showInputDialog(playerChallenged +  " what's: " + operation);
+
+        String reto = javax.swing.JOptionPane.showInputDialog(playerChallenged + " what's: " + operation);
         int retoAnswer = Integer.parseInt(reto);
 
         int retoResult = 0;
@@ -312,7 +295,7 @@ public class GameList {
             retoResult = arg1 * arg2;
         }
         if (operator == "/") {
-            retoResult = (int)(arg1 / arg2);
+            retoResult = (int) (arg1 / arg2);
         }
 
         if (retoAnswer == retoResult) {
@@ -320,7 +303,7 @@ public class GameList {
         }
         if (retoAnswer != retoResult) {
             javax.swing.JOptionPane.showMessageDialog(null, "That's wrong :(");
-            
+
             if (currentPlayer == "player1") {
                 movePlayer2(-1, false);
             }
@@ -330,4 +313,3 @@ public class GameList {
         }
     }
 }
-

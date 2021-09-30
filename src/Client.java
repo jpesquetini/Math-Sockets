@@ -1,6 +1,4 @@
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 
 /**
@@ -11,23 +9,24 @@ import java.net.Socket;
  * @author Jose Pablo Esquetini
  */
 public class Client {
-    final int port;
-    DataInputStream input;
-    DataOutputStream output;
-    String ipAddress = "127.0.0.1";
-    Socket cs;
+    DataInputStream in;
+    DataOutputStream out;
 
-    /**
-     * @throws IOException
-     */
-    public Client() throws IOException {
-        port = 5000;
+    public Client(int port) {
+        try {
+            Socket sc = new Socket("localhost", port);
+            System.out.println("Connected");
+            in = new DataInputStream(sc.getInputStream());
+            out = new DataOutputStream(sc.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-        cs = new Socket(ipAddress, port);
-        System.out.println("Connected to server");
+    public void my_turn() {
+    }
 
-        input = new DataInputStream(cs.getInputStream());
-        output = new DataOutputStream(cs.getOutputStream());
+    public void your_turn() throws IOException {
+        System.out.println(in.readUTF());
     }
 }
-
