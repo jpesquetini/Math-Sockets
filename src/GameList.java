@@ -41,8 +41,9 @@ public class GameList {
      * Este metodo se encarga de crear y asignar los nodos que almacenaran la informacion de las casillas de juego.
      */
     public void gameListAssignment() {
-        int[] xcoords = {100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600};
-        int[] ycoords = {110, 220, 330, 440, 550, 660, 770, 880, 990, 1010, 1110, 1220, 1330, 1440, 1550, 1660};
+        int[] xcoords = {-115, 35, 185, 335, -115, 35, 185, 335, -115, 35, 185, 335, -115, 35, 185, 335};
+        int[] ycoords = {-105, -105, -105, -105, 70, 70, 70, 70, 245, 245, 245, 245, 420, 420, 420, 420};
+        //Sumarle 85 para obtener la  "y" del jugador 2
 
         this.gameData.insertLast("Inicio", 1, xcoords[0], ycoords[0]);
 
