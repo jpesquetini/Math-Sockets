@@ -122,7 +122,8 @@ public class Menu extends Thread {
         Node temp = gameData.get_head();    // RECORDAR ELIMINAR ESTO EN CASO DE QUE NO SE OCUPE
 
         Game_logic game1 = new Game_logic();
-        Menu menuServer = new Menu("Server", temp, gameData, "player1", game1);
         Menu menuClient = new Menu("Client", temp, gameData, "player2", game1);
+        Menu menuServer = new Menu("Server", temp, gameData, "player1", game1);
+
     }
 }
