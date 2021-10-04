@@ -9,25 +9,48 @@ import java.net.Socket;
  * @author Jose Pablo Esquetini
  */
 public class Client {
-    DataInputStream in;
-    DataOutputStream out;
+    private final DataInputStream in;
+    private final DataOutputStream out;
 
-    public Client(int port, GameList gamedata) {
-        try {
-            Socket sc = new Socket("localhost", port);
-            System.out.println("Connected");
-            in = new DataInputStream(sc.getInputStream());
-            out = new DataOutputStream(sc.getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    /**
+     * @param port
+     * @throws IOException
+     */
+    public Client(int port) throws IOException {
+        Socket sc = new Socket("localhost", port);
+        System.out.println("Connected");
+        in = new DataInputStream(sc.getInputStream());
+        out = new DataOutputStream(sc.getOutputStream());
     }
 
-    public void my_turn(int number) throws IOException {
-        out.writeInt(number);
+    /**
+     * @throws IOException
+     */
+    public void wait_in() throws IOException {
+        in.readUTF();
     }
 
-    public void your_turn() throws IOException {
-       System.out.println(in.readInt());
+    /**
+     * @throws IOException
+     */
+    public void confirm_out() throws IOException {
+        out.writeUTF("ready");
     }
+
+    /**
+     * @param position
+     * @throws IOException
+     */
+    public void my_turn(int position) throws IOException {
+        out.writeInt(position);
+    }
+
+    /**
+     * @return
+     * @throws IOException
+     */
+    public int your_turn() throws IOException {
+        return in.readInt();
+    }
+
 }

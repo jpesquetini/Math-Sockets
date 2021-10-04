@@ -1,7 +1,6 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.security.KeyStore;
 
 /**
  * Esta clase crea un servidor que se acepta la conexion de la clase cliente para iniciar el juego.
@@ -11,25 +10,49 @@ import java.security.KeyStore;
  * @author Jose Pablo Esquetini
  */
 public class Server {
-    private DataInputStream in;
-    private DataOutputStream out;
-    private ServerSocket server;
-    private Socket sc;
+    private final DataInputStream in;
+    private final DataOutputStream out;
 
-    public Server(int port, GameList gamedata) throws IOException {
-        server = new ServerSocket(port);
+    /**
+     * @param port
+     * @throws IOException
+     */
+    public Server(int port) throws IOException {
+        ServerSocket server = new ServerSocket(port);
         System.out.println("Server started");
-        sc = server.accept();
+        Socket sc = server.accept();
         System.out.println("Client connected");
         in = new DataInputStream(sc.getInputStream());
         out = new DataOutputStream(sc.getOutputStream());
     }
 
-    public void my_turn(int number) throws IOException {
-        out.writeInt(number);
+    /**
+     * @throws IOException
+     */
+    public void wait_in() throws IOException {
+        in.readUTF();
     }
 
-    public void your_turn() throws IOException {
-        System.out.println("NUMBER RECEIVED " + in.readInt());
+    /**
+     * @throws IOException
+     */
+    public void confirm_out() throws IOException {
+        out.writeUTF("ready");
+    }
+
+    /**
+     * @param position
+     * @throws IOException
+     */
+    public void my_turn(int position) throws IOException {
+        out.writeInt(position);
+    }
+
+    /**
+     * @return
+     * @throws IOException
+     */
+    public int your_turn() throws IOException {
+        return in.readInt();
     }
 }

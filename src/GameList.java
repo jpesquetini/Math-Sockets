@@ -1,9 +1,7 @@
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Esta clase define la logica de la lista de juego.
@@ -14,8 +12,10 @@ import java.util.Random;
  */
 public class GameList {
     private DoublyLinkedList gameData;
-    private Server jugador1;
-    private Client jugador2;
+    private Server gameServer;
+    private Client gameClient;
+    private Game_window gameWindow_p1;
+    private Game_window gameWindow_p2;
 
     static String[] typeArray = new String[]{"Reto", "Reto", "Reto", "Reto", "Reto", "Reto", "Reto",
             "Trampa", "Trampa", "Trampa", "Trampa",
@@ -87,58 +87,58 @@ public class GameList {
     /**
      * Este metodo se encarga de la logica de los movimientos del jugador 1 en el tablero de juego.
      */
-    public void movePlayer1(int i, boolean firstTime, Game_window game_window) {
+    public void movePlayer1(int i, boolean firstTime, boolean socket, boolean reto, Game_window game_window) throws IOException {
         if (i > 0) {
-            //System.out.println(gameData.player1.getListPosition());
-
             while (i != 0) {
-
                 String position = gameData.player1.getType();
                 if (!position.equals("Fin")) {
                     gameData.player1 = gameData.player1.getNext();
-                    game_window.move_jugador1(gameData.player1.getXcoords(),gameData.player1.getYcoords());
+                    game_window.move_jugador1(gameData.player1.getXcoords(), gameData.player1.getYcoords());
                     i--;
                 } else {
-                    //System.out.println("Se ha llegado al Fin");
+                    System.out.println("Se ha llegado al Fin");
                     break;
                 }
-
             }
-
-
             if (firstTime) {
                 String casilla = gameData.player1.getType();
-                //System.out.println(casilla);
-
                 if (casilla.equals("Reto")) {
-                    reto("player1",game_window);
+                    reto("player1", game_window);
                 }
                 if (casilla.equals("Tunel")) {
-                    tunel("player1",game_window);
+                    tunel("player1", game_window);
                 }
                 if (casilla.equals("Trampa")) {
-                    trampa("player1",game_window);
+                    trampa("player1", game_window);
+                }
+            } else {
+                if (!socket) {
+                    if (reto) {
+                        gameServer.my_turn(i);
+                        System.out.println("Im player1 and im on " + gameData.player1.getType());
+                        gameWindow_p2.reto_logic("player2");
+                    } else {
+                        gameServer.my_turn(i);
+                        System.out.println("Im player1 and im on " + gameData.player1.getType());
+                    }
                 }
             }
         }
-
         if (i < 0) {
-            //System.out.println(gameData.player1.getListPosition());
-
+            if (!socket) {
+                gameServer.my_turn(i);
+                System.out.println("Im player1 and im on " + gameData.player1.getType());
+            }
             while (i != 0) {
                 String position = gameData.player1.getType();
-
                 if (!position.equals("Inicio")) {
                     gameData.player1 = gameData.player1.getPrev();
-                    game_window.jugador1.setLocation(gameData.player1.getXcoords(),gameData.player1.getYcoords());
+                    game_window.jugador1.setLocation(gameData.player1.getXcoords(), gameData.player1.getYcoords());
                     i++;
                 } else {
-                    //System.out.println("Se ha llegado al Inicio");
                     break;
                 }
             }
-
-            //System.out.println(gameData.player1.getListPosition());
         }
     }
 
@@ -150,28 +150,22 @@ public class GameList {
      * @author Jose Pablo Esquetini
      */
 
-    public void movePlayer2(int i, boolean firstTime, Game_window game_window) {
+    public void movePlayer2(int i, boolean firstTime, boolean socket, boolean reto, Game_window game_window) throws IOException {
         if (i > 0) {
-            //System.out.println(gameData.player2.getListPosition());
             while (i != 0) {
                 String position = gameData.player2.getType();
 
                 if (!position.equals("Fin")) {
                     gameData.player2 = gameData.player2.getNext();
-                    game_window.move_jugador2(gameData.player2.getXcoords(),gameData.player2.getYcoords());
+                    //game_window.move_jugador2(gameData.player2.getXcoords(), gameData.player2.getYcoords());
                     i--;
                 } else {
                     //System.out.println("Se ha llegado al Fin");
                     break;
                 }
             }
-
-
-
-
             if (firstTime) {
                 String casilla = gameData.player2.getType();
-                //System.out.println(casilla);
 
                 if (casilla.equals("Reto")) {
                     reto("player2", game_window);
@@ -182,145 +176,120 @@ public class GameList {
                 if (casilla.equals("Trampa")) {
                     trampa("player2", game_window);
                 }
+            } else {
+                if (!socket) {
+                    if (reto) {
+                        gameClient.my_turn(i);
+                        System.out.println("Im player2 and im on " + gameData.player2.getType());
+                        gameWindow_p1.reto_logic("player1");
+                        game_window.move_jugador2(gameData.player2.getXcoords(), gameData.player2.getYcoords());
+                    } else {
+                        gameClient.my_turn(i);
+                        System.out.println("Im player2 and im on " + gameData.player2.getType());
+                        game_window.move_jugador2(gameData.player2.getXcoords(), gameData.player2.getYcoords());
+                    }
+                }
             }
         }
-
         if (i < 0) {
-            //System.out.println(gameData.player2.getListPosition());
-
+            if (!socket) {
+                gameClient.my_turn(i);
+                //System.out.println("Im player2 and im on " + gameData.player2.getType());
+            }
             while (i != 0) {
                 String position = gameData.player2.getType();
 
                 if (!position.equals("Inicio")) {
                     gameData.player2 = gameData.player2.getPrev();
-                    game_window.move_jugador2(gameData.player2.getXcoords(),gameData.player2.getYcoords());
+                    game_window.move_jugador2(gameData.player2.getXcoords(), gameData.player2.getYcoords());
                     i++;
                 } else {
-                    //System.out.println("Se ha llegado al Inicio");
                     break;
                 }
             }
-
-            //System.out.println(gameData.player2.getListPosition());
         }
     }
 
     /**
      * Este metodo se encarga de la logica de las casillas de tipo tunel.
-     *
-     * @author Andres Uriza
-     * @author Daniel Castro
-     * @author Jose Pablo Esquetini
      */
-
-    public void tunel(String currentPlayer, Game_window game_window) {
+    public void tunel(String currentPlayer, Game_window game_window) throws IOException {
         int rnd = (int) (Math.random() * 3 + 1);
         System.out.println(rnd);
 
 
         if (currentPlayer.equals("player1")) {
-            movePlayer1(rnd, false, game_window);
+            movePlayer1(rnd, false, false, false, game_window);
         }
         if (currentPlayer.equals("player2")) {
-            movePlayer2(rnd, false, game_window);
+            movePlayer2(rnd, false, false, false, game_window);
         }
     }
 
     /**
      * Este metodo se encarga de la logica de las casillas de tipo trampa.
-     *
-     * @author Andres Uriza
-     * @author Daniel Castro
-     * @author Jose Pablo Esquetini
      */
-
-    public void trampa(String currentPlayer, Game_window game_window) {
+    public void trampa(String currentPlayer, Game_window game_window) throws IOException {
         int rnd = (int) (Math.random() * 3 + 1);
         rnd *= -1;
         System.out.println(rnd);
 
         if (currentPlayer.equals("player1")) {
-            movePlayer1(rnd, false,game_window);
+            movePlayer1(rnd, false, false, false, game_window);
         }
         if (currentPlayer.equals("player2")) {
-            movePlayer2(rnd, false, game_window);
+            movePlayer2(rnd, false, false, false, game_window);
         }
     }
 
     /**
      * Este metodo se encarga de la logica de las casillas de tipo reto.
      */
-    public void reto(String currentPlayer, Game_window game_window) {
+    public void reto(String currentPlayer, Game_window game_window) throws IOException {
         String playerChallenged = "";
 
 
-
-
         if (currentPlayer.equals("player1")) {
-            movePlayer1(1, false, game_window);
-            playerChallenged = "player2";
+            movePlayer1(1, false, false, true, game_window);
         }
         if (currentPlayer.equals("player2")) {
-            movePlayer2(1, false, game_window);
-            playerChallenged = "player1";
+            movePlayer2(1, false, false, true, game_window);
         }
+    }
 
-        int arg1 = (int) (Math.random() * 50 + 1);
-        int arg2 = (int) (Math.random() * 50 + 1);
-        String[] operatorArray = {"+", "-", "*", "/"};
-        int i = new Random().nextInt(operatorArray.length);
-        String operator = operatorArray[i];
-        String operation = arg1 + operator + arg2;
+    /**
+     * @return
+     */
+    public Node get_player1() {
+        return gameData.getPlayer1(); //.getType();
+    }
 
+    /**
+     * @return
+     */
+    public Node get_player2() {
+        return gameData.getPlayer2(); //.getType();
+    }
 
+    /**
+     * @param player1
+     */
+    public void set_server(Server player1) {
+        this.gameServer = player1;
+    }
 
-        game_window.reto.setText("Su reto es: " + operation);
-        game_window.side_panel.add(game_window.enviar_respuesta);
-        game_window.side_panel.add(game_window.answer);
-        game_window.side_panel.add(game_window.respuesta);
-        game_window.side_panel.add(game_window.reto);
-        game_window.side_panel.setVisible(true);
+    /**
+     * @param player2
+     */
+    public void set_client(Client player2) {
+        this.gameClient = player2;
+    }
 
-        game_window.enviar_respuesta.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int retoAnswer = Integer.parseInt(game_window.respuesta.getText());
-                int retoResult = 0;
-                if (operator.equals("+")) {
-                    retoResult = arg1 + arg2;
-                }
-                if (operator.equals("-")) {
-                    retoResult = arg1 - arg2;
-                }
-                if (operator.equals("*")) {
-                    retoResult = arg1 * arg2;
-                }
-                if (operator.equals("/")) {
-                    retoResult = (int) (arg1 / arg2);
-                }
+    public void set_gameWindow1(Game_window gameWindow) {
+        this.gameWindow_p1 = gameWindow;
+    }
 
-
-                if (retoAnswer == retoResult) {
-                    System.out.println("CORRECT");
-                }
-                if (retoAnswer != retoResult) {
-                    System.out.println(":(");
-
-                    if (currentPlayer.equals("player1")) {
-                        movePlayer2(-1, false, game_window);
-                    }
-                    if (currentPlayer.equals("player2")) {
-                        movePlayer1(-1, false, game_window);
-                    }
-                }
-
-
-
-
-            }
-        });
-
-
-
+    public void set_gameWindow2(Game_window gameWindow2) {
+        this.gameWindow_p2 = gameWindow2;
     }
 }

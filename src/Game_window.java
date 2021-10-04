@@ -1,8 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.Random;
 
 /**
  * Esta clase define una ventana de interfaz de juego, donde se puede llevar a cabo el juego.
@@ -13,7 +12,7 @@ import java.io.IOException;
  */
 
 public class Game_window {
-    private JPanel panel;
+    private final JPanel panel;
     public JPanel side_panel;
     private JPanel jugadores;
     private int width;
@@ -32,13 +31,20 @@ public class Game_window {
     public String resp_jugador;
     private int aleatorio;
     private JButton Dado;
+    private GameList gameList;
+    private Server gameServer;
+    private Client gameClient;
+    private String type;
+    private Node temp;
+    private String currentPlayer;
+    private boolean wait_reto = false;
 
     // private JLabel bgLabel;
     // private BufferedImage bg;
 
     /**
      * Est metodo se encarga de crar la ventana de juego.
-     * 
+     *
      * @param type
      * @throws IOException
      * @author Andres Uriza
@@ -46,7 +52,19 @@ public class Game_window {
      * @author Jose Pablo Esquetini
      */
 
-    public Game_window(String type, GameList gameList, String currentPlayer, Server gameServer, Client gameClient) throws IOException {
+    public Game_window(Node temp, String type, GameList gameList, String currentPlayer, Server gameServer, Client
+            gameClient) throws IOException {
+
+        this.gameServer = gameServer;
+        this.gameClient = gameClient;
+        this.type = type;
+        this.gameList = gameList;
+        this.temp = temp;
+        this.currentPlayer = currentPlayer;
+
+        gameList.set_server(gameServer);
+        gameList.set_client(gameClient);
+
         width = 900;
         height = 720;
 
@@ -58,27 +76,27 @@ public class Game_window {
         dado3 = new JLabel("3");
         dado4 = new JLabel("4");
 
-        dado0.setFont(new Font("serif", Font.BOLD,100));
-        dado1.setFont(new Font("serif", Font.BOLD,100));
-        dado2.setFont(new Font("serif", Font.BOLD,100));
-        dado3.setFont(new Font("serif", Font.BOLD,100));
-        dado4.setFont(new Font("serif", Font.BOLD,100));
+        dado0.setFont(new Font("serif", Font.BOLD, 100));
+        dado1.setFont(new Font("serif", Font.BOLD, 100));
+        dado2.setFont(new Font("serif", Font.BOLD, 100));
+        dado3.setFont(new Font("serif", Font.BOLD, 100));
+        dado4.setFont(new Font("serif", Font.BOLD, 100));
 
-        dado0.setBounds(130,50,50,150);
-        dado1.setBounds(130,50,50,150);
-        dado2.setBounds(130,50,50,150);
-        dado3.setBounds(130,50,50,150);
-        dado4.setBounds(130,50,50,150);
+        dado0.setBounds(130, 50, 50, 150);
+        dado1.setBounds(130, 50, 50, 150);
+        dado2.setBounds(130, 50, 50, 150);
+        dado3.setBounds(130, 50, 50, 150);
+        dado4.setBounds(130, 50, 50, 150);
 
         jugador1 = new JLabel(new ImageIcon("images/player1.1.png"));
         jugador1.setSize(300, 300);
         jugador1.setLocation(-115, -105);
-        jugador1.createImage(100,100);
+        jugador1.createImage(100, 100);
 
         jugador2 = new JLabel(new ImageIcon("images/player2.1.png"));
         jugador2.setSize(300, 300);
         jugador2.setLocation(-115, -20);
-        jugador2.createImage(100,100);
+        jugador2.createImage(100, 100);
 
         panel = new JPanel();
         panel.setSize(600, 700);
@@ -93,28 +111,28 @@ public class Game_window {
 
         jugadores = new JPanel();
         jugadores.setSize(600, 700);
-        jugadores.setLocation(0,0);
+        jugadores.setLocation(0, 0);
         jugadores.setBackground(Color.orange);
         jugadores.setLayout(null);
         jugadores.setOpaque(false);
 
         reto = new JLabel("Su reto es: ");
-        reto.setFont(new Font("serif", Font.BOLD,30));
-        reto.setBounds(30,500,300,100);
+        reto.setFont(new Font("serif", Font.BOLD, 30));
+        reto.setBounds(30, 500, 300, 100);
 
         answer = new JLabel("Respuesta:");
-        answer.setFont(new Font("serif", Font.BOLD,12));
-        answer.setBounds(3,558,100,100);
+        answer.setFont(new Font("serif", Font.BOLD, 12));
+        answer.setBounds(3, 558, 100, 100);
 
         respuesta = new JTextField();
         respuesta.setSize(200, 20);
         respuesta.setLocation(70, 600);
 
         enviar_respuesta = new JButton("Revisar");
-        enviar_respuesta.setBounds(90,630,100,30);
+        enviar_respuesta.setBounds(90, 630, 100, 30);
 
         Dado = new JButton("Dado");
-        Dado.setBounds(90,50,120,30);
+        Dado.setBounds(90, 50, 120, 30);
 
         jugadores.add(jugador1);
         jugadores.add(jugador2);
@@ -130,67 +148,78 @@ public class Game_window {
         jugadores.add(jugador1);
         jugadores.setVisible(true);
 
-        enviar_respuesta.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                resp_jugador = respuesta.getText();
+        enviar_respuesta.addActionListener(e -> resp_jugador = respuesta.getText());
+
+        Dado.addActionListener(e -> {
+            try {
+                dice_logic();
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
         });
+        if (!type.equals(currentPlayer)) {
+            not_my_turn();
+        }
+    }
 
-        Dado.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                side_panel.remove(dado0);
-                side_panel.remove(dado1);
-                side_panel.remove(dado2);
-                side_panel.remove(dado3);
-                side_panel.remove(dado4);
-                side_panel.revalidate();
-                side_panel.repaint();
-                aleatorio = (int)(Math.random()*5);
+    public void dice_logic() throws IOException {
+        if (type.equals(currentPlayer)) {
+            side_panel.remove(dado0);
+            side_panel.remove(dado1);
+            side_panel.remove(dado2);
+            side_panel.remove(dado3);
+            side_panel.remove(dado4);
+            side_panel.revalidate();
+            side_panel.repaint();
+            aleatorio = (int) (Math.random() * 5);
 
-                //System.out.println(aleatorio);
-
-                if (aleatorio == 0){
-                    side_panel.add(dado0);
-                    side_panel.setVisible(true);
-                }
-                if (aleatorio == 1) {
-                    side_panel.add(dado1);
-                    side_panel.setVisible(true);
-                }
-                if(aleatorio == 2) {
-                    side_panel.add(dado2);
-                    side_panel.setVisible(true);
-                }
-                if (aleatorio == 3) {
-                    side_panel.add(dado3);
-                    side_panel.setVisible(true);
-                }
-                if (aleatorio == 4) {
-                    side_panel.add(dado4);
-                    side_panel.setVisible(true);
-                }
-
-                if (currentPlayer == "player2") {
-                    gameList.movePlayer2(aleatorio, true, Game_window.this);
-                }
-                if (currentPlayer == "player1") {
-                    gameList.movePlayer1(aleatorio, true, Game_window.this);
-                }
-
+            if (aleatorio == 0) {
+                side_panel.add(dado0);
+                side_panel.setVisible(true);
             }
-        });
+            if (aleatorio == 1) {
+                side_panel.add(dado1);
+                side_panel.setVisible(true);
+            }
+            if (aleatorio == 2) {
+                side_panel.add(dado2);
+                side_panel.setVisible(true);
+            }
+            if (aleatorio == 3) {
+                side_panel.add(dado3);
+                side_panel.setVisible(true);
+            }
+            if (aleatorio == 4) {
+                side_panel.add(dado4);
+                side_panel.setVisible(true);
+            }
+            if (type.equals("player1")) {
+                if (aleatorio == 0) {
+                    gameServer.my_turn(0);
+                } else {
+                    gameList.movePlayer1(aleatorio, true, false, false, Game_window.this);
+                }
+                currentPlayer = "player2";
+            } else {
+                if (aleatorio == 0) {
+                    gameClient.my_turn(0);
+                } else {
+                    gameList.movePlayer2(aleatorio, true, false, false, Game_window.this);
+                }
+                currentPlayer = "player1";
+            }
+            not_my_turn();
+        }
     }
 
 
-    public void move_jugador1(int coordX, int coordY){
+    public void move_jugador1(int coordX, int coordY) {
         jugador1.setLocation(coordX, coordY);
         jugador1.setVisible(true);
         //this.sleep();
     }
 
-    public void sleep(){ //HACER QUE SE VEA EL AVANCE POR CADA CASILLA
+    public void sleep() { //HACER QUE SE VEA EL AVANCE POR CADA CASILLA
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -198,43 +227,38 @@ public class Game_window {
         }
     }
 
-    public void move_jugador2(int coordX, int coordY){
-        jugador2.setLocation(coordX, coordY+85);
+    public void move_jugador2(int coordX, int coordY) {
+        jugador2.setLocation(coordX, coordY + 85);
         jugador2.setVisible(true);
     }
 
     /**
      * Esta función recibe una copia del nodo head de la lista doblemente enlazada y
      * rellena el grid para acomodar las casillas
-     * 
+     *
      * @param temp
-     * 
      * @author Andres Uriza
      * @author Daniel Castro
      * @author Jose Pablo Esquetini
      */
-
-    public void boardlogic(Node temp){
-        while( temp != null){
+    public void boardlogic(Node temp) {
+        while (temp != null) {
             String posicion = temp.getType();
             JLabel Label = new JLabel(posicion);
-            if (temp.getType()=="Reto"){
+            if (temp.getType().equals("Reto")) {
                 Label.setBackground(Color.green); //ELEGIR COLOR PARA LA CASILLA RETO
-                Label.setOpaque(true);
-            }else{
-                if (temp.getType()=="Trampa"){
+            } else {
+                if (temp.getType().equals("Trampa")) {
                     Label.setBackground(Color.red); //ELEGIR COLOR PARA LA CASILLA TRAMPA
-                    Label.setOpaque(true);
-                }else {
-                    if ((temp.getType() == "Inicio") || (temp.getType() == "Fin")) {
+                } else {
+                    if ((temp.getType().equals("Inicio")) || (temp.getType().equals("Fin"))) {
                         Label.setBackground(Color.gray); //ELEGIR COLOR PARA LA CASILLA inicio y fin
-                        Label.setOpaque(true);
-                    }else {
+                    } else {
                         Label.setBackground(Color.cyan); //ELEGIR COLOR PARA LA CASILLA TUNEL
-                        Label.setOpaque(true);
                     }
                 }
             }
+            Label.setOpaque(true);
             Label.setBorder(BorderFactory.createLineBorder(Color.black, 2));
             Label.setHorizontalAlignment(SwingConstants.CENTER);
             panel.add(Label);
@@ -242,5 +266,112 @@ public class Game_window {
         }
     }
 
-}
+    public void turn_player1() throws IOException {
+        gameList.movePlayer1(gameClient.your_turn(), false, true, false, Game_window.this);
+        move_jugador1(gameList.get_player1().getXcoords(), gameList.get_player1().getYcoords());
+        System.out.println("Apparently, player1 is in " + gameList.get_player1().getType());
+        if (gameList.get_player1().getType().equals("Fin")) {
+            currentPlayer = null;
+        } else {
+            if (!wait_reto) {
+                currentPlayer = "player2";
+            }
+        }
+    }
 
+    public void turn_player2() throws IOException {
+        gameList.movePlayer2(gameServer.your_turn(), false, true, false, Game_window.this);
+        move_jugador2(gameList.get_player2().getXcoords(), gameList.get_player2().getYcoords());
+        System.out.println("Apparently, player2 is in " + gameList.get_player2().getType());
+        if (gameList.get_player2().getType().equals("Fin")) {
+            currentPlayer = null;
+        } else {
+            if (!wait_reto) {
+                currentPlayer = "player1";
+            }
+        }
+    }
+
+    public void reto_logic(String playerChallenged) {
+        this.wait_reto = true;
+
+        int arg1 = (int) (Math.random() * 50 + 1);
+        int arg2 = (int) (Math.random() * 50 + 1);
+        String[] operatorArray = {"+", "-", "*", "/"};
+        int i = new Random().nextInt(operatorArray.length);
+        String operator = operatorArray[i];
+        String operation = arg1 + operator + arg2;
+
+
+        reto.setText("Su reto es: " + operation);
+        side_panel.add(enviar_respuesta);
+        side_panel.add(answer);
+        side_panel.add(respuesta);
+        side_panel.add(reto);
+        side_panel.setVisible(true);
+
+        enviar_respuesta.addActionListener(e -> {
+            int retoAnswer = Integer.parseInt(respuesta.getText());
+            int retoResult = 0;
+            if (operator.equals("+")) {
+                retoResult = arg1 + arg2;
+            }
+            if (operator.equals("-")) {
+                retoResult = arg1 - arg2;
+            }
+            if (operator.equals("*")) {
+                retoResult = arg1 * arg2;
+            }
+            if (operator.equals("/")) {
+                retoResult = (int) (arg1 / arg2);
+            }
+
+            if (retoAnswer == retoResult) {
+                System.out.println("CORRECT");
+            } else {
+                System.out.println(":(");
+                if (playerChallenged.equals("player1")) {
+                    try {
+                        gameList.movePlayer1(-1, false, true, false, Game_window.this);
+                        gameServer.my_turn(-1);
+                        currentPlayer = "player2";
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                if (currentPlayer.equals("player2")) {
+                    try {
+                        gameList.movePlayer1(-1, false, true, false, Game_window.this);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+            this.wait_reto = false;
+        });
+    }
+
+    public void not_my_turn() {
+        thread_the_creator(type);
+    }
+
+    public void thread_the_creator(String type) {
+        if (type.equals("player1")) {
+            new Thread(() -> {
+                try {
+                    turn_player2();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        } else {
+            new Thread(() -> {
+                try {
+                    turn_player1();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+    }
+}
