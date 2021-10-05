@@ -106,12 +106,14 @@ public class GameList {
 
                 if (!position.equals("Fin")) {
                     gameData.player1 = gameData.player1.getNext();
+                    game_window.move_jugador1(gameData.player1.getXcoords(), gameData.player1.getYcoords());
+
                     i--;
                 } else {
                     break;
                 }
             }
-            game_window.move_jugador1(gameData.player1.getXcoords(), gameData.player1.getYcoords());
+            //game_window.move_jugador1(gameData.player1.getXcoords(), gameData.player1.getYcoords());
             if (firstTime) {
                 String casilla = gameData.player1.getType();
                 if (casilla.equals("Reto")) {
@@ -139,12 +141,13 @@ public class GameList {
                 String position = gameData.player1.getType();
                 if (!position.equals("Inicio")) {
                     gameData.player1 = gameData.player1.getPrev();
+                    game_window.jugador1.setLocation(gameData.player1.getXcoords(), gameData.player1.getYcoords());
                     i++;
                 } else {
                     break;
                 }
             }
-            game_window.jugador1.setLocation(gameData.player1.getXcoords(), gameData.player1.getYcoords());
+            //game_window.jugador1.setLocation(gameData.player1.getXcoords(), gameData.player1.getYcoords());
         }
         if (!socket) {
             gameServer.my_turn(i);
@@ -169,12 +172,13 @@ public class GameList {
 
                 if (!position.equals("Fin")) {
                     gameData.player2 = gameData.player2.getNext();
+                    game_window.move_jugador2(gameData.player2.getXcoords(), gameData.player2.getYcoords());
                     i--;
                 } else {
                     break;
                 }
             }
-            game_window.move_jugador2(gameData.player2.getXcoords(), gameData.player2.getYcoords());
+            //game_window.move_jugador2(gameData.player2.getXcoords(), gameData.player2.getYcoords());
             if (firstTime) {
                 String casilla = gameData.player2.getType();
 
@@ -204,12 +208,13 @@ public class GameList {
 
                 if (!position.equals("Inicio")) {
                     gameData.player2 = gameData.player2.getPrev();
+                    game_window.move_jugador2(gameData.player2.getXcoords(), gameData.player2.getYcoords());
                     i++;
                 } else {
                     break;
                 }
             }
-            game_window.move_jugador2(gameData.player2.getXcoords(), gameData.player2.getYcoords());
+            //game_window.move_jugador2(gameData.player2.getXcoords(), gameData.player2.getYcoords());
         }
         if (!socket) {
             gameClient.my_turn(i);

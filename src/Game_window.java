@@ -166,7 +166,7 @@ public class Game_window {
             side_panel.remove(dado4);
             side_panel.revalidate();
             side_panel.repaint();
-            int aleatorio = (int) (Math.random() * 5);
+            int aleatorio = (int) (Math.random() * 4 + 1);
 
             if (aleatorio == 0) {
                 side_panel.add(dado0);
