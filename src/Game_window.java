@@ -10,48 +10,40 @@ import java.util.Random;
  * @author Daniel Castro
  * @author Jose Pablo Esquetini
  */
-
 public class Game_window {
     private final JPanel panel;
     public JPanel side_panel;
-    private JPanel jugadores;
-    private int width;
-    private int height;
-    private JLabel dado0;
-    private JLabel dado1;
-    private JLabel dado2;
-    private JLabel dado3;
-    private JLabel dado4;
+    private final JLabel dado0;
+    private final JLabel dado1;
+    private final JLabel dado2;
+    private final JLabel dado3;
+    private final JLabel dado4;
     public JLabel jugador1;
-    private JLabel jugador2;
+    private final JLabel jugador2;
     public JLabel reto;
     public JLabel answer;
     public JTextField respuesta;
     public JButton enviar_respuesta;
     public String resp_jugador;
-    private int aleatorio;
-    private JButton Dado;
-    private GameList gameList;
-    private Server gameServer;
-    private Client gameClient;
-    private String type;
-    private Node temp;
+    private final GameList gameList;
+    private final Server gameServer;
+    private final Client gameClient;
+    private final String type;
     private String currentPlayer;
     private boolean wait_reto = false;
-
-    // private JLabel bgLabel;
-    // private BufferedImage bg;
+    private UI menuInterface;
 
     /**
-     * Est metodo se encarga de crar la ventana de juego.
+     * Este metodo se encarga de crar la ventana de juego.
      *
+     * @param temp
      * @param type
+     * @param gameList
+     * @param currentPlayer
+     * @param gameServer
+     * @param gameClient
      * @throws IOException
-     * @author Andres Uriza
-     * @author Daniel Castro
-     * @author Jose Pablo Esquetini
      */
-
     public Game_window(Node temp, String type, GameList gameList, String currentPlayer, Server gameServer, Client
             gameClient) throws IOException {
 
@@ -59,16 +51,15 @@ public class Game_window {
         this.gameClient = gameClient;
         this.type = type;
         this.gameList = gameList;
-        this.temp = temp;
         this.currentPlayer = currentPlayer;
 
         gameList.set_server(gameServer);
         gameList.set_client(gameClient);
 
-        width = 900;
-        height = 720;
+        int width = 900;
+        int height = 720;
 
-        UI menuInterface = new UI(type, width, height);
+        menuInterface = new UI(type, width, height);
 
         dado0 = new JLabel("0");
         dado1 = new JLabel("1");
@@ -109,7 +100,7 @@ public class Game_window {
         side_panel.setLayout(null);
         side_panel.setBackground(new Color(60, 139, 175));
 
-        jugadores = new JPanel();
+        JPanel jugadores = new JPanel();
         jugadores.setSize(600, 700);
         jugadores.setLocation(0, 0);
         jugadores.setBackground(Color.orange);
@@ -131,8 +122,8 @@ public class Game_window {
         enviar_respuesta = new JButton("Revisar");
         enviar_respuesta.setBounds(90, 630, 100, 30);
 
-        Dado = new JButton("Dado");
-        Dado.setBounds(90, 50, 120, 30);
+        JButton dado = new JButton("Dado");
+        dado.setBounds(90, 50, 120, 30);
 
         jugadores.add(jugador1);
         jugadores.add(jugador2);
@@ -142,7 +133,7 @@ public class Game_window {
         menuInterface.window.add(side_panel);
         menuInterface.window.setVisible(true);
 
-        side_panel.add(Dado);
+        side_panel.add(dado);
         side_panel.setVisible(true);
 
         jugadores.add(jugador1);
@@ -150,18 +141,22 @@ public class Game_window {
 
         enviar_respuesta.addActionListener(e -> resp_jugador = respuesta.getText());
 
-        Dado.addActionListener(e -> {
+        dado.addActionListener(e -> {
             try {
                 dice_logic();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
+
         if (!type.equals(currentPlayer)) {
             not_my_turn();
         }
     }
 
+    /**
+     * @throws IOException
+     */
     public void dice_logic() throws IOException {
         if (type.equals(currentPlayer)) {
             side_panel.remove(dado0);
@@ -171,7 +166,7 @@ public class Game_window {
             side_panel.remove(dado4);
             side_panel.revalidate();
             side_panel.repaint();
-            aleatorio = (int) (Math.random() * 5);
+            int aleatorio = (int) (Math.random() * 5);
 
             if (aleatorio == 0) {
                 side_panel.add(dado0);
@@ -212,14 +207,20 @@ public class Game_window {
         }
     }
 
-
+    /**
+     * @param coordX
+     * @param coordY
+     */
     public void move_jugador1(int coordX, int coordY) {
         jugador1.setLocation(coordX, coordY);
         jugador1.setVisible(true);
         //this.sleep();
     }
 
-    public void sleep() { //HACER QUE SE VEA EL AVANCE POR CADA CASILLA
+    /**
+     *
+     */
+    public void sleep() {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -227,6 +228,10 @@ public class Game_window {
         }
     }
 
+    /**
+     * @param coordX
+     * @param coordY
+     */
     public void move_jugador2(int coordX, int coordY) {
         jugador2.setLocation(coordX, coordY + 85);
         jugador2.setVisible(true);
@@ -237,24 +242,21 @@ public class Game_window {
      * rellena el grid para acomodar las casillas
      *
      * @param temp
-     * @author Andres Uriza
-     * @author Daniel Castro
-     * @author Jose Pablo Esquetini
      */
     public void boardlogic(Node temp) {
         while (temp != null) {
             String posicion = temp.getType();
             JLabel Label = new JLabel(posicion);
             if (temp.getType().equals("Reto")) {
-                Label.setBackground(Color.green); //ELEGIR COLOR PARA LA CASILLA RETO
+                Label.setBackground(Color.green);
             } else {
                 if (temp.getType().equals("Trampa")) {
-                    Label.setBackground(Color.red); //ELEGIR COLOR PARA LA CASILLA TRAMPA
+                    Label.setBackground(Color.red);
                 } else {
                     if ((temp.getType().equals("Inicio")) || (temp.getType().equals("Fin"))) {
-                        Label.setBackground(Color.gray); //ELEGIR COLOR PARA LA CASILLA inicio y fin
+                        Label.setBackground(Color.gray);
                     } else {
-                        Label.setBackground(Color.cyan); //ELEGIR COLOR PARA LA CASILLA TUNEL
+                        Label.setBackground(Color.cyan);
                     }
                 }
             }
@@ -266,10 +268,11 @@ public class Game_window {
         }
     }
 
+    /**
+     * @throws IOException
+     */
     public void turn_player1() throws IOException {
         gameList.movePlayer1(gameClient.your_turn(), false, true, false, Game_window.this);
-        move_jugador1(gameList.get_player1().getXcoords(), gameList.get_player1().getYcoords());
-        System.out.println("Apparently, player1 is in " + gameList.get_player1().getType());
         if (gameList.get_player1().getType().equals("Fin")) {
             currentPlayer = null;
         } else {
@@ -279,10 +282,11 @@ public class Game_window {
         }
     }
 
+    /**
+     * @throws IOException
+     */
     public void turn_player2() throws IOException {
         gameList.movePlayer2(gameServer.your_turn(), false, true, false, Game_window.this);
-        move_jugador2(gameList.get_player2().getXcoords(), gameList.get_player2().getYcoords());
-        System.out.println("Apparently, player2 is in " + gameList.get_player2().getType());
         if (gameList.get_player2().getType().equals("Fin")) {
             currentPlayer = null;
         } else {
@@ -292,6 +296,9 @@ public class Game_window {
         }
     }
 
+    /**
+     * @param playerChallenged
+     */
     public void reto_logic(String playerChallenged) {
         this.wait_reto = true;
 
@@ -302,13 +309,14 @@ public class Game_window {
         String operator = operatorArray[i];
         String operation = arg1 + operator + arg2;
 
-
         reto.setText("Su reto es: " + operation);
         side_panel.add(enviar_respuesta);
         side_panel.add(answer);
         side_panel.add(respuesta);
         side_panel.add(reto);
+
         side_panel.setVisible(true);
+        menuInterface.window.setVisible(true);
 
         enviar_respuesta.addActionListener(e -> {
             int retoAnswer = Integer.parseInt(respuesta.getText());
@@ -323,7 +331,7 @@ public class Game_window {
                 retoResult = arg1 * arg2;
             }
             if (operator.equals("/")) {
-                retoResult = (int) (arg1 / arg2);
+                retoResult = arg1 / arg2;
             }
 
             if (retoAnswer == retoResult) {
@@ -332,29 +340,39 @@ public class Game_window {
                 System.out.println(":(");
                 if (playerChallenged.equals("player1")) {
                     try {
-                        gameList.movePlayer1(-1, false, true, false, Game_window.this);
+                        gameList.movePlayer1(-1, false, false, false, Game_window.this);
                         gameServer.my_turn(-1);
-                        currentPlayer = "player2";
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
                 }
                 if (currentPlayer.equals("player2")) {
                     try {
-                        gameList.movePlayer1(-1, false, true, false, Game_window.this);
+                        gameList.movePlayer2(-1, false, false, false, Game_window.this);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
                 }
             }
+            if (playerChallenged.equals("player1")) {
+                currentPlayer = "player1";
+            } else {
+                currentPlayer = "player2";
+            }
             this.wait_reto = false;
         });
     }
 
+    /**
+     *
+     */
     public void not_my_turn() {
         thread_the_creator(type);
     }
 
+    /**
+     * @param type
+     */
     public void thread_the_creator(String type) {
         if (type.equals("player1")) {
             new Thread(() -> {

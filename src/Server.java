@@ -14,6 +14,8 @@ public class Server {
     private final DataOutputStream out;
 
     /**
+     * Metodo constructor del servidor
+     *
      * @param port
      * @throws IOException
      */
@@ -27,6 +29,8 @@ public class Server {
     }
 
     /**
+     * Espera una conexion
+     *
      * @throws IOException
      */
     public void wait_in() throws IOException {
@@ -34,6 +38,8 @@ public class Server {
     }
 
     /**
+     * Confirma que esta listo
+     *
      * @throws IOException
      */
     public void confirm_out() throws IOException {
@@ -41,6 +47,8 @@ public class Server {
     }
 
     /**
+     * Envia un entero con la cantidad de posiciones que se movio
+     *
      * @param position
      * @throws IOException
      */
@@ -49,6 +57,8 @@ public class Server {
     }
 
     /**
+     * Recibe un entero de la cantidad de posiciones que se movio el cliente
+     *
      * @return
      * @throws IOException
      */

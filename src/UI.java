@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 
 /**
@@ -13,6 +12,8 @@ public class UI {
     public JFrame window;
 
     /**
+     * Metodo constructor para la ventana
+     *
      * @param title
      * @param width
      * @param height

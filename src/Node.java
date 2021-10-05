@@ -31,28 +31,22 @@ public class Node {
         this.ycoords = ycoords;
     }
 
+
     /**
      * Este metodo retorna un string cual indica el tipo de casilla que almacena este nodo.
      *
-     * @throws type
-     * @author Andres Uriza
-     * @author Daniel Castro
-     * @author Jose Pablo Esquetini
+     * @return String de tipo de casilla
      */
-
     public String getType() {
         return this.type;
     }
 
+
     /**
      * Este metodo retorna un entero el cual indica el numero de posicion del nodo en la lista del juego.
      *
-     * @throws listPosition
-     * @author Andres Uriza
-     * @author Daniel Castro
-     * @author Jose Pablo Esquetini
+     * @return int de la posicion en la lista
      */
-
     public int getListPosition() {
         return this.listPosition;
     }
@@ -60,12 +54,8 @@ public class Node {
     /**
      * Este metodo retorna un entero el cual indica la coordenada x del jugador en el mapa de juego.
      *
-     * @throws xcoords
-     * @author Andres Uriza
-     * @author Daniel Castro
-     * @author Jose Pablo Esquetini
+     * @return int de la coordenada x
      */
-
     public int getXcoords() {
         return this.xcoords;
     }
@@ -73,12 +63,11 @@ public class Node {
     /**
      * Este metodo retorna un entero el cual indica la coordenada y del jugador en el mapa de juego.
      *
-     * @throws ycoords
+     * @throws
      * @author Andres Uriza
      * @author Daniel Castro
      * @author Jose Pablo Esquetini
      */
-
     public int getYcoords() {
         return this.ycoords;
     }
@@ -86,7 +75,7 @@ public class Node {
     /**
      * Este metodo retorna el siguiente nodo en la lista.
      *
-     * @throws next
+     * @throws
      * @author Andres Uriza
      * @author Daniel Castro
      * @author Jose Pablo Esquetini
@@ -106,7 +95,7 @@ public class Node {
     /**
      * Este metodo retorna el nodo anterior en la lista.
      *
-     * @throws prev
+     * @throws 
      * @author Andres Uriza
      * @author Daniel Castro
      * @author Jose Pablo Esquetini

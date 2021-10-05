@@ -11,7 +11,7 @@ import java.util.List;
  * @author Jose Pablo Esquetini
  */
 public class GameList {
-    private DoublyLinkedList gameData;
+    private final DoublyLinkedList gameData;
     private Server gameServer;
     private Client gameClient;
     private Game_window gameWindow_p1;
@@ -22,8 +22,10 @@ public class GameList {
             "Tunel", "Tunel", "Tunel"};
 
     /**
-     * Este metodo se encarga de randomiiisar un array de strings los cuales indican el tipo de casilla para la lista de
-     * juego y retorna este array.
+     * Este metodo se encarga de generar un array de strings aleatorios los cuales indican el tipo de casilla para la
+     * lista de juego y retorna este array.
+     *
+     * @return
      */
     public static String[] listRandomizer() {
         List<String> typeList = Arrays.asList(typeArray);
@@ -79,6 +81,8 @@ public class GameList {
 
     /**
      * Este metodo retorna el nodo que es la cabeza de la lista de juego.
+     *
+     * @return
      */
     public Node get_head() {
         return gameData.getHead();
@@ -86,20 +90,28 @@ public class GameList {
 
     /**
      * Este metodo se encarga de la logica de los movimientos del jugador 1 en el tablero de juego.
+     *
+     * @param i
+     * @param firstTime
+     * @param socket
+     * @param reto
+     * @param game_window
+     * @throws IOException
      */
-    public void movePlayer1(int i, boolean firstTime, boolean socket, boolean reto, Game_window game_window) throws IOException {
+    public void movePlayer1(int i, boolean firstTime, boolean socket, boolean reto, Game_window game_window) throws
+            IOException {
         if (i > 0) {
             while (i != 0) {
                 String position = gameData.player1.getType();
+
                 if (!position.equals("Fin")) {
                     gameData.player1 = gameData.player1.getNext();
-                    game_window.move_jugador1(gameData.player1.getXcoords(), gameData.player1.getYcoords());
                     i--;
                 } else {
-                    System.out.println("Se ha llegado al Fin");
                     break;
                 }
             }
+            game_window.move_jugador1(gameData.player1.getXcoords(), gameData.player1.getYcoords());
             if (firstTime) {
                 String casilla = gameData.player1.getType();
                 if (casilla.equals("Reto")) {
@@ -115,55 +127,54 @@ public class GameList {
                 if (!socket) {
                     if (reto) {
                         gameServer.my_turn(i);
-                        System.out.println("Im player1 and im on " + gameData.player1.getType());
                         gameWindow_p2.reto_logic("player2");
                     } else {
                         gameServer.my_turn(i);
-                        System.out.println("Im player1 and im on " + gameData.player1.getType());
                     }
                 }
             }
         }
         if (i < 0) {
-            if (!socket) {
-                gameServer.my_turn(i);
-                System.out.println("Im player1 and im on " + gameData.player1.getType());
-            }
             while (i != 0) {
                 String position = gameData.player1.getType();
                 if (!position.equals("Inicio")) {
                     gameData.player1 = gameData.player1.getPrev();
-                    game_window.jugador1.setLocation(gameData.player1.getXcoords(), gameData.player1.getYcoords());
                     i++;
                 } else {
                     break;
                 }
             }
+            game_window.jugador1.setLocation(gameData.player1.getXcoords(), gameData.player1.getYcoords());
+        }
+        if (!socket) {
+            gameServer.my_turn(i);
         }
     }
 
     /**
      * Este metodo se encarga de la logica de los movimientos del jugador 2 en el tablero de juego.
      *
-     * @author Andres Uriza
-     * @author Daniel Castro
-     * @author Jose Pablo Esquetini
+     * @param i
+     * @param firstTime
+     * @param socket
+     * @param reto
+     * @param game_window
+     * @throws IOException
      */
-
-    public void movePlayer2(int i, boolean firstTime, boolean socket, boolean reto, Game_window game_window) throws IOException {
+    public void movePlayer2(int i, boolean firstTime, boolean socket, boolean reto, Game_window game_window) throws
+            IOException {
         if (i > 0) {
             while (i != 0) {
                 String position = gameData.player2.getType();
 
                 if (!position.equals("Fin")) {
                     gameData.player2 = gameData.player2.getNext();
-                    //game_window.move_jugador2(gameData.player2.getXcoords(), gameData.player2.getYcoords());
                     i--;
                 } else {
-                    //System.out.println("Se ha llegado al Fin");
                     break;
                 }
             }
+            game_window.move_jugador2(gameData.player2.getXcoords(), gameData.player2.getYcoords());
             if (firstTime) {
                 String casilla = gameData.player2.getType();
 
@@ -180,38 +191,37 @@ public class GameList {
                 if (!socket) {
                     if (reto) {
                         gameClient.my_turn(i);
-                        System.out.println("Im player2 and im on " + gameData.player2.getType());
                         gameWindow_p1.reto_logic("player1");
-                        game_window.move_jugador2(gameData.player2.getXcoords(), gameData.player2.getYcoords());
                     } else {
                         gameClient.my_turn(i);
-                        System.out.println("Im player2 and im on " + gameData.player2.getType());
-                        game_window.move_jugador2(gameData.player2.getXcoords(), gameData.player2.getYcoords());
                     }
                 }
             }
         }
         if (i < 0) {
-            if (!socket) {
-                gameClient.my_turn(i);
-                //System.out.println("Im player2 and im on " + gameData.player2.getType());
-            }
             while (i != 0) {
                 String position = gameData.player2.getType();
 
                 if (!position.equals("Inicio")) {
                     gameData.player2 = gameData.player2.getPrev();
-                    game_window.move_jugador2(gameData.player2.getXcoords(), gameData.player2.getYcoords());
                     i++;
                 } else {
                     break;
                 }
             }
+            game_window.move_jugador2(gameData.player2.getXcoords(), gameData.player2.getYcoords());
+        }
+        if (!socket) {
+            gameClient.my_turn(i);
         }
     }
 
     /**
      * Este metodo se encarga de la logica de las casillas de tipo tunel.
+     *
+     * @param currentPlayer
+     * @param game_window
+     * @throws IOException
      */
     public void tunel(String currentPlayer, Game_window game_window) throws IOException {
         int rnd = (int) (Math.random() * 3 + 1);
@@ -228,6 +238,10 @@ public class GameList {
 
     /**
      * Este metodo se encarga de la logica de las casillas de tipo trampa.
+     *
+     * @param currentPlayer
+     * @param game_window
+     * @throws IOException
      */
     public void trampa(String currentPlayer, Game_window game_window) throws IOException {
         int rnd = (int) (Math.random() * 3 + 1);
@@ -244,11 +258,12 @@ public class GameList {
 
     /**
      * Este metodo se encarga de la logica de las casillas de tipo reto.
+     *
+     * @param currentPlayer
+     * @param game_window
+     * @throws IOException
      */
     public void reto(String currentPlayer, Game_window game_window) throws IOException {
-        String playerChallenged = "";
-
-
         if (currentPlayer.equals("player1")) {
             movePlayer1(1, false, false, true, game_window);
         }
@@ -285,10 +300,16 @@ public class GameList {
         this.gameClient = player2;
     }
 
+    /**
+     * @param gameWindow
+     */
     public void set_gameWindow1(Game_window gameWindow) {
         this.gameWindow_p1 = gameWindow;
     }
 
+    /**
+     * @param gameWindow2
+     */
     public void set_gameWindow2(Game_window gameWindow2) {
         this.gameWindow_p2 = gameWindow2;
     }
