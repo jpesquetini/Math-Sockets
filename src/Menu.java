@@ -117,7 +117,7 @@ public class Menu extends Thread {
     public static void main(String[] args) throws IOException {
         GameList gameData = new GameList();
         gameData.gameListAssignment();
-        Node temp = gameData.get_head();    // RECORDAR ELIMINAR ESTO EN CASO DE QUE NO SE OCUPE
+        Node temp = gameData.get_head();
 
         Game_logic game1 = new Game_logic();
         Menu menuServer = new Menu("Server", temp, gameData, game1);
