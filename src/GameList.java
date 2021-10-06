@@ -106,24 +106,22 @@ public class GameList {
 
                 if (!position.equals("Fin")) {
                     gameData.player1 = gameData.player1.getNext();
-                    game_window.move_jugador1(gameData.player1.getXcoords(), gameData.player1.getYcoords());
-
                     i--;
                 } else {
+                    game_window.dispose();
                     break;
                 }
             }
-            //game_window.move_jugador1(gameData.player1.getXcoords(), gameData.player1.getYcoords());
             if (firstTime) {
                 String casilla = gameData.player1.getType();
                 if (casilla.equals("Reto")) {
-                    reto("player1", game_window);
+                    reto(i, "player1", game_window);
                 }
                 if (casilla.equals("Tunel")) {
-                    tunel("player1", game_window);
+                    tunel(i, "player1", game_window);
                 }
                 if (casilla.equals("Trampa")) {
-                    trampa("player1", game_window);
+                    trampa(i, "player1", game_window);
                 }
             } else {
                 if (!socket) {
@@ -134,6 +132,7 @@ public class GameList {
                         gameServer.my_turn(i);
                     }
                 }
+                game_window.move_jugador1(gameData.player1.getXcoords(), gameData.player1.getYcoords());
             }
         }
         if (i < 0) {
@@ -147,7 +146,7 @@ public class GameList {
                     break;
                 }
             }
-            //game_window.jugador1.setLocation(gameData.player1.getXcoords(), gameData.player1.getYcoords());
+            game_window.move_jugador1(gameData.player1.getXcoords(), gameData.player1.getYcoords());
         }
         if (!socket) {
             gameServer.my_turn(i);
@@ -172,24 +171,23 @@ public class GameList {
 
                 if (!position.equals("Fin")) {
                     gameData.player2 = gameData.player2.getNext();
-                    game_window.move_jugador2(gameData.player2.getXcoords(), gameData.player2.getYcoords());
                     i--;
                 } else {
+                    game_window.dispose();
                     break;
                 }
             }
-            //game_window.move_jugador2(gameData.player2.getXcoords(), gameData.player2.getYcoords());
             if (firstTime) {
                 String casilla = gameData.player2.getType();
 
                 if (casilla.equals("Reto")) {
-                    reto("player2", game_window);
+                    reto(i, "player2", game_window);
                 }
                 if (casilla.equals("Tunel")) {
-                    tunel("player2", game_window);
+                    tunel(i, "player2", game_window);
                 }
                 if (casilla.equals("Trampa")) {
-                    trampa("player2", game_window);
+                    trampa(i, "player2", game_window);
                 }
             } else {
                 if (!socket) {
@@ -200,6 +198,7 @@ public class GameList {
                         gameClient.my_turn(i);
                     }
                 }
+                game_window.move_jugador2(gameData.player2.getXcoords(), gameData.player2.getYcoords());
             }
         }
         if (i < 0) {
@@ -214,7 +213,7 @@ public class GameList {
                     break;
                 }
             }
-            //game_window.move_jugador2(gameData.player2.getXcoords(), gameData.player2.getYcoords());
+            game_window.move_jugador2(gameData.player2.getXcoords(), gameData.player2.getYcoords());
         }
         if (!socket) {
             gameClient.my_turn(i);
@@ -228,16 +227,16 @@ public class GameList {
      * @param game_window
      * @throws IOException
      */
-    public void tunel(String currentPlayer, Game_window game_window) throws IOException {
+    public void tunel(int i, String currentPlayer, Game_window game_window) throws IOException {
         int rnd = (int) (Math.random() * 3 + 1);
         System.out.println(rnd);
 
 
         if (currentPlayer.equals("player1")) {
-            movePlayer1(rnd, false, false, false, game_window);
+            movePlayer1(rnd + i, false, false, false, game_window);
         }
         if (currentPlayer.equals("player2")) {
-            movePlayer2(rnd, false, false, false, game_window);
+            movePlayer2(rnd + i, false, false, false, game_window);
         }
     }
 
@@ -248,16 +247,16 @@ public class GameList {
      * @param game_window
      * @throws IOException
      */
-    public void trampa(String currentPlayer, Game_window game_window) throws IOException {
+    public void trampa(int i, String currentPlayer, Game_window game_window) throws IOException {
         int rnd = (int) (Math.random() * 3 + 1);
         rnd *= -1;
         System.out.println(rnd);
 
         if (currentPlayer.equals("player1")) {
-            movePlayer1(rnd, false, false, false, game_window);
+            movePlayer1(rnd + i, false, false, false, game_window);
         }
         if (currentPlayer.equals("player2")) {
-            movePlayer2(rnd, false, false, false, game_window);
+            movePlayer2(rnd + i, false, false, false, game_window);
         }
     }
 
@@ -268,12 +267,12 @@ public class GameList {
      * @param game_window
      * @throws IOException
      */
-    public void reto(String currentPlayer, Game_window game_window) throws IOException {
+    public void reto(int i, String currentPlayer, Game_window game_window) throws IOException {
         if (currentPlayer.equals("player1")) {
-            movePlayer1(1, false, false, true, game_window);
+            movePlayer1(i + 1, false, false, true, game_window);
         }
         if (currentPlayer.equals("player2")) {
-            movePlayer2(1, false, false, true, game_window);
+            movePlayer2(i + 1, false, false, true, game_window);
         }
     }
 

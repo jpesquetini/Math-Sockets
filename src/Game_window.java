@@ -32,6 +32,7 @@ public class Game_window {
     private String currentPlayer;
     private boolean wait_reto = false;
     private UI menuInterface;
+    private JPanel jugadores;
 
     /**
      * Este metodo se encarga de crar la ventana de juego.
@@ -59,7 +60,7 @@ public class Game_window {
         int width = 900;
         int height = 720;
 
-        menuInterface = new UI(type, width, height);
+        menuInterface = new UI(type + " -  It's " + currentPlayer + "'s turn", width, height);
 
         dado0 = new JLabel("0");
         dado1 = new JLabel("1");
@@ -100,10 +101,9 @@ public class Game_window {
         side_panel.setLayout(null);
         side_panel.setBackground(new Color(60, 139, 175));
 
-        JPanel jugadores = new JPanel();
+        jugadores = new JPanel();
         jugadores.setSize(600, 700);
         jugadores.setLocation(0, 0);
-        jugadores.setBackground(Color.orange);
         jugadores.setLayout(null);
         jugadores.setOpaque(false);
 
@@ -125,19 +125,15 @@ public class Game_window {
         JButton dado = new JButton("Dado");
         dado.setBounds(90, 50, 120, 30);
 
+
+        boardlogic(temp);
         jugadores.add(jugador1);
         jugadores.add(jugador2);
-
         menuInterface.window.add(jugadores);
         menuInterface.window.add(panel);
+        side_panel.add(dado);
         menuInterface.window.add(side_panel);
         menuInterface.window.setVisible(true);
-
-        side_panel.add(dado);
-        side_panel.setVisible(true);
-
-        jugadores.add(jugador1);
-        jugadores.setVisible(true);
 
         enviar_respuesta.addActionListener(e -> resp_jugador = respuesta.getText());
 
@@ -170,23 +166,18 @@ public class Game_window {
 
             if (aleatorio == 0) {
                 side_panel.add(dado0);
-                side_panel.setVisible(true);
             }
             if (aleatorio == 1) {
                 side_panel.add(dado1);
-                side_panel.setVisible(true);
             }
             if (aleatorio == 2) {
                 side_panel.add(dado2);
-                side_panel.setVisible(true);
             }
             if (aleatorio == 3) {
                 side_panel.add(dado3);
-                side_panel.setVisible(true);
             }
             if (aleatorio == 4) {
                 side_panel.add(dado4);
-                side_panel.setVisible(true);
             }
             if (type.equals("player1")) {
                 if (aleatorio == 0) {
@@ -203,6 +194,9 @@ public class Game_window {
                 }
                 currentPlayer = "player1";
             }
+            menuInterface.window.setTitle(type + " -  It's " + currentPlayer + "'s turn");
+            side_panel.revalidate();
+            side_panel.repaint();
             not_my_turn();
         }
     }
@@ -213,7 +207,6 @@ public class Game_window {
      */
     public void move_jugador1(int coordX, int coordY) {
         jugador1.setLocation(coordX, coordY);
-        jugador1.setVisible(true);
         //this.sleep();
     }
 
@@ -234,7 +227,7 @@ public class Game_window {
      */
     public void move_jugador2(int coordX, int coordY) {
         jugador2.setLocation(coordX, coordY + 85);
-        jugador2.setVisible(true);
+        //jugador2.setVisible(true);
     }
 
     /**
@@ -275,9 +268,11 @@ public class Game_window {
         gameList.movePlayer1(gameClient.your_turn(), false, true, false, Game_window.this);
         if (gameList.get_player1().getType().equals("Fin")) {
             currentPlayer = null;
+            dispose();
         } else {
             if (!wait_reto) {
                 currentPlayer = "player2";
+                menuInterface.window.setTitle(type + " -  It's " + currentPlayer + "'s turn");
             }
         }
     }
@@ -289,9 +284,11 @@ public class Game_window {
         gameList.movePlayer2(gameServer.your_turn(), false, true, false, Game_window.this);
         if (gameList.get_player2().getType().equals("Fin")) {
             currentPlayer = null;
+            dispose();
         } else {
             if (!wait_reto) {
                 currentPlayer = "player1";
+                menuInterface.window.setTitle(type + " -  It's " + currentPlayer + "'s turn");
             }
         }
     }
@@ -310,13 +307,14 @@ public class Game_window {
         String operation = arg1 + operator + arg2;
 
         reto.setText("Su reto es: " + operation);
+        side_panel.remove(reto);
         side_panel.add(enviar_respuesta);
         side_panel.add(answer);
         side_panel.add(respuesta);
         side_panel.add(reto);
+        side_panel.repaint();
+        side_panel.revalidate();
 
-        side_panel.setVisible(true);
-        menuInterface.window.setVisible(true);
 
         enviar_respuesta.addActionListener(e -> {
             int retoAnswer = Integer.parseInt(respuesta.getText());
@@ -335,9 +333,9 @@ public class Game_window {
             }
 
             if (retoAnswer == retoResult) {
-                System.out.println("CORRECT");
+                reto.setText("CORRECTO");
             } else {
-                System.out.println(":(");
+                reto.setText("INCORRECTO");
                 if (playerChallenged.equals("player1")) {
                     try {
                         gameList.movePlayer1(-1, false, false, false, Game_window.this);
@@ -359,6 +357,11 @@ public class Game_window {
             } else {
                 currentPlayer = "player2";
             }
+            side_panel.remove(enviar_respuesta);
+            side_panel.remove(answer);
+            side_panel.remove(respuesta);
+            side_panel.repaint();
+            side_panel.revalidate();
             this.wait_reto = false;
         });
     }
@@ -390,6 +393,20 @@ public class Game_window {
                     e.printStackTrace();
                 }
             }).start();
+        }
+    }
+
+    public void dispose() throws IOException {
+        menuInterface.window.dispose();
+        GameList gameData = new GameList();
+        gameData.gameListAssignment();
+        Node temp = gameData.get_head();
+        Game_logic game1 = new Game_logic();
+
+        if (type.equals("player1")) {
+            Menu menuServer = new Menu("Server", temp, gameData, game1);
+        } else {
+            Menu menuClient = new Menu("Client", temp, gameData, game1);
         }
     }
 }

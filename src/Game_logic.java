@@ -58,6 +58,5 @@ public class Game_logic extends Thread {
             game = new Game_window(temp, "player2", gameList, currentPlayer, jugador1, jugador2);
             gameList.set_gameWindow2(game);
         }
-        game.boardlogic(temp);
     }
 }
