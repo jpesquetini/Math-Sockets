@@ -31,8 +31,7 @@ public class Game_window {
     private final String type;
     private String currentPlayer;
     private boolean wait_reto = false;
-    private UI menuInterface;
-    private JPanel jugadores;
+    private final UI menuInterface;
 
     /**
      * Este metodo se encarga de crar la ventana de juego.
@@ -101,7 +100,7 @@ public class Game_window {
         side_panel.setLayout(null);
         side_panel.setBackground(new Color(60, 139, 175));
 
-        jugadores = new JPanel();
+        JPanel jugadores = new JPanel();
         jugadores.setSize(600, 700);
         jugadores.setLocation(0, 0);
         jugadores.setLayout(null);

@@ -229,8 +229,6 @@ public class GameList {
      */
     public void tunel(int i, String currentPlayer, Game_window game_window) throws IOException {
         int rnd = (int) (Math.random() * 3 + 1);
-        System.out.println(rnd);
-
 
         if (currentPlayer.equals("player1")) {
             movePlayer1(rnd + i, false, false, false, game_window);
@@ -250,7 +248,6 @@ public class GameList {
     public void trampa(int i, String currentPlayer, Game_window game_window) throws IOException {
         int rnd = (int) (Math.random() * 3 + 1);
         rnd *= -1;
-        System.out.println(rnd);
 
         if (currentPlayer.equals("player1")) {
             movePlayer1(rnd + i, false, false, false, game_window);
